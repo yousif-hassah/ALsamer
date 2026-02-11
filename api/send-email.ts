@@ -1,7 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import nodemailer from "nodemailer";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
@@ -10,28 +8,51 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const { name, email, phone, message, toEmail, subject } = req.body;
 
+  // 1. Create a transporter using Gmail SMTP
+  // These credentials should be set in Vercel Environment Variables
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER, // Your Gmail address (e.g., your-app@gmail.com)
+      pass: process.env.EMAIL_PASS, // Your Gmail App Password (16 characters)
+    },
+  });
+
   try {
-    const { data, error } = await resend.emails.send({
-      from: "Al-Samer Logistics <onboarding@resend.dev>", // Change to your verified domain later
-      to: [toEmail || "controlcode11@gmail.com"],
+    // 2. Send the email
+    await transporter.sendMail({
+      from: `"${name} (عبر الموقع)" <${process.env.EMAIL_USER}>`,
+      to: toEmail,
+      replyTo: email,
       subject: subject || `رسالة جديدة من ${name}`,
-      reply_to: email,
       html: `
-        <h2>رسالة جديدة من الموقع</h2>
-        <p><strong>الاسم:</strong> ${name}</p>
-        <p><strong>الإيميل:</strong> ${email}</p>
-        <p><strong>الهاتف:</strong> ${phone || "غير محدد"}</p>
-        <p><strong>الرسالة:</strong></p>
-        <p>${message}</p>
+        <div style="direction: rtl; font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+          <h2 style="color: #f15a24;">رسالة جديدة من الموقع الرسمي</h2>
+          <hr>
+          <p><strong>الاسم:</strong> ${name}</p>
+          <p><strong>البريد الإلكتروني:</strong> ${email}</p>
+          <p><strong>الهاتف:</strong> ${phone || "غير محدد"}</p>
+          <p><strong>الرسالة:</strong></p>
+          <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
+            ${message}
+          </div>
+          <hr>
+          <footer style="font-size: 12px; color: #888;">
+            هذه الرسالة تم إرسالها تلقائياً من تطبيق Al-Samer Logistics.
+          </footer>
+        </div>
       `,
     });
 
-    if (error) {
-      return res.status(400).json(error);
-    }
-
-    res.status(200).json(data);
-  } catch (err) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(200)
+      .json({ success: true, message: "Message sent successfully" });
+  } catch (err: any) {
+    console.error("Nodemailer error:", err);
+    res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+      details: err.message,
+    });
   }
 }

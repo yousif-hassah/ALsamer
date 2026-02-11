@@ -54,7 +54,7 @@ const Footer = () => {
             </h4>
             <ul className="space-y-1.5 sm:space-y-2">
               <li className="text-xs sm:text-sm text-white/50 break-all">{t("contact.email.value")}</li>
-              <li className="text-xs sm:text-sm text-white/50">{t("contact.phone.value")}</li>
+              <li className="text-xs sm:text-sm text-white/50">{t("contact.phone.077")}</li>
               <li className="text-xs sm:text-sm text-white/50">Baghdad, Iraq</li>
             </ul>
           </div>
