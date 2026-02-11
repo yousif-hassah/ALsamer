@@ -165,8 +165,7 @@ const translations: Record<Language, Record<string, string>> = {
       "Your trusted partner for global logistics solutions. We deliver reliability, speed, and excellence in every shipment.",
     "footer.quicklinks": "Quick Links",
     "footer.contact": "Contact",
-    "footer.rights":
-      "© 2024 Al Samer International Company. All rights reserved.",
+    "footer.rights": "Al-Samer International Company",
     "footer.privacy": "Privacy Policy",
     "footer.terms": "Terms of Service",
     "footer.made": "Made by Al Samer Company Creative Projects",
@@ -318,7 +317,7 @@ const translations: Record<Language, Record<string, string>> = {
       "شريكك الموثوق لحلول الخدمات اللوجستية العالمية. نقدم الموثوقية والسرعة والتميز في كل شحنة.",
     "footer.quicklinks": "روابط سريعة",
     "footer.contact": "اتصل بنا",
-    "footer.rights": "© 2024 شركة السامر الدولية. جميع الحقوق محفوظة.",
+    "footer.rights": "شركة السامر الدولية",
     "footer.privacy": "سياسة الخصوصية",
     "footer.terms": "شروط الخدمة",
     "footer.made": "صنع بواسطة مشاريع شركة السامر الإبداعية",
