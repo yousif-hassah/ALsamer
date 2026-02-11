@@ -7,7 +7,7 @@ export const WEB3FORMS_CONFIG = {
   // Just enter your email on their website and you'll get the key instantly
   ACCESS_KEY:
     import.meta.env.VITE_WEB3FORMS_ACCESS_KEY ||
-    "f0bded65-c404-4c45-a93f-d1070675217b",
+    "83d9b934-ed60-4978-8627-1dba5174c6b7",
 };
 
 // How to get your Access Key:
