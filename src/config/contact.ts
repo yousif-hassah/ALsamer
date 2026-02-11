@@ -6,13 +6,13 @@
 export const CONTACT_CONFIG = {
   // The main verified email in Web3Forms.
   // IMPORTANT: When you change this, you must also update the ACCESS_KEY in web3forms.ts
-  primaryEmail: "yousifhassan4247@gmail.com",
+  primaryEmail: "controlcode11@gmail.com",
 
   // List of emails shown in the contact section
   recipients: [
     {
-      label: "yousifhassan4247@gmail.com",
-      value: "yousifhassan4247@gmail.com",
+      label: "controlcode11@gmail.com",
+      value: "controlcode11@gmail.com",
     },
     { label: "win224149@gmail.com", value: "win224149@gmail.com" },
     { label: "ccc@gmail.com", value: "ccc@gmail.com" },
