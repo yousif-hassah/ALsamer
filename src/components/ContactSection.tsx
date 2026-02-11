@@ -68,42 +68,40 @@ const ContactSection = () => {
       }
 
       // Send email using Web3Forms
-      // Professional Smart Routing: Send everything to the verified primary email
-      // but label the subject so the admin knows the intent.
-      const formDataToSend = new FormData();
-      formDataToSend.append("access_key", WEB3FORMS_CONFIG.ACCESS_KEY);
-      formDataToSend.append("name", validated.name);
-      formDataToSend.append("email", validated.email);
-      formDataToSend.append("phone", validated.phone || "N/A");
-      formDataToSend.append("message", validated.message);
+      // Professional Smart Routing: Send a notification for EACH recipient to the verified primary email.
+      // This ensures the admin knows this message was intended for the whole team.
+      const sendPromises = CONTACT_CONFIG.recipients.map(async (recipient) => {
+        const formDataToEach = new FormData();
+        formDataToEach.append("access_key", WEB3FORMS_CONFIG.ACCESS_KEY);
+        formDataToEach.append("name", validated.name);
+        formDataToEach.append("email", validated.email);
+        formDataToEach.append("phone", validated.phone || "N/A");
+        formDataToEach.append("message", validated.message);
+        formDataToEach.append(
+          "subject",
+          `[موجه للجميع - ${recipient.label}] رسالة جديدة من ${validated.name}`,
+        );
+        formDataToEach.append("to_email", CONTACT_CONFIG.primaryEmail);
+        formDataToEach.append("from_name", "Al-Samer Logistics - Contact Form");
+        formDataToEach.append("replyto", validated.email);
 
-      // Smart Subject for general form
-      formDataToSend.append(
-        "subject",
-        `[Form العام] رسالة جديدة من ${validated.name}`,
-      );
-
-      // All general messages go to your primary verified email from config
-      formDataToSend.append("to_email", CONTACT_CONFIG.primaryEmail);
-
-      formDataToSend.append("from_name", "Al-Samer Logistics - Contact Form");
-      formDataToSend.append("replyto", validated.email);
-
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formDataToSend,
+        return fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          body: formDataToEach,
+        });
       });
 
-      const data = await response.json();
+      const responses = await Promise.all(sendPromises);
+      const dataResults = await Promise.all(responses.map((res) => res.json()));
 
-      if (data.success) {
+      if (dataResults.every((data) => data.success)) {
         toast({
           title: "✅ تم الإرسال بنجاح!",
-          description: "شكراً لتواصلك معنا. سنرد عليك في أقرب وقت ممكن.",
+          description: "شكراً لتواصلك معنا. تم إبلاغ جميع المختصين برسالتك.",
         });
         setFormData({ name: "", email: "", phone: "", message: "" });
       } else {
-        throw new Error(data.message || "فشل الإرسال");
+        throw new Error("حدث خطأ في الإرسال");
       }
     } catch (error) {
       console.error("Contact form error:", error);
