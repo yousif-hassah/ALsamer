@@ -87,6 +87,7 @@ const ContactSection = () => {
       });
 
       const data = await response.json();
+      console.log("Web3Forms Response:", data); // لتتبع الخطأ في المتصفح
 
       if (data.success) {
         toast({
@@ -97,9 +98,13 @@ const ContactSection = () => {
         });
         setFormData({ name: "", email: "", phone: "", message: "" });
       } else {
-        throw new Error(data.message || "فشل الإرسال عبر Web3Forms");
+        // إظهار رسالة الخطأ القادمة من Web3Forms مباشرة
+        throw new Error(
+          data.message ||
+            (isRTL ? "فشل الإرسال عبر السيرفر" : "Server sending failed"),
+        );
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Contact form error:", error);
       if (error instanceof z.ZodError) {
         toast({
@@ -110,9 +115,11 @@ const ContactSection = () => {
       } else {
         toast({
           title: isRTL ? "❌ فشل الإرسال" : "❌ Sending Failed",
-          description: isRTL
-            ? "يرجى التحقق من مفتاح الوصول (Access Key) في ملف الإعدادات."
-            : "Please check your Access Key in the configuration file.",
+          description:
+            error.message ||
+            (isRTL
+              ? "يرجى التحقق من مفتاح الوصول (Access Key) أو تفعيل الإيميل."
+              : "Please check your Access Key or verify your email."),
           variant: "destructive",
         });
       }
