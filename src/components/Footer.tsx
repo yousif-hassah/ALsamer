@@ -1,6 +1,7 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import logo from "@/assets/logo-white.webp";
 import { CONTACT_CONFIG } from "@/config/contact";
+import { Instagram, Facebook } from "lucide-react";
 
 const Footer = () => {
   const { t, isRTL } = useLanguage();
@@ -79,6 +80,26 @@ const Footer = () => {
                 Baghdad, Iraq
               </li>
             </ul>
+            <div
+              className={`flex items-center gap-4 pt-2 ${isRTL ? "justify-end" : "justify-start"}`}
+            >
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/50 hover:text-white transition-colors"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/50 hover:text-white transition-colors"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+            </div>
           </div>
         </div>
 
