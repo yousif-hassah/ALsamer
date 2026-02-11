@@ -67,42 +67,26 @@ const ContactSection = () => {
         return;
       }
 
-      // Send email using Web3Forms
-      // Professional Smart Routing: Send a notification for EACH recipient to the verified primary email.
-      // This ensures the admin knows this message was intended for the whole team.
-      const sendPromises = CONTACT_CONFIG.recipients.map(async (recipient) => {
-        const formDataToEach = new FormData();
-        formDataToEach.append("access_key", WEB3FORMS_CONFIG.ACCESS_KEY);
-        formDataToEach.append("name", validated.name);
-        formDataToEach.append("email", validated.email);
-        formDataToEach.append("phone", validated.phone || "N/A");
-        formDataToEach.append("message", validated.message);
-        formDataToEach.append(
-          "subject",
-          `[موجه للجميع - ${recipient.label}] رسالة جديدة من ${validated.name}`,
-        );
-        formDataToEach.append("to_email", CONTACT_CONFIG.primaryEmail);
-        formDataToEach.append("from_name", "Al-Samer Logistics - Contact Form");
-        formDataToEach.append("replyto", validated.email);
+      // Professional Mailto System: Bypasses verification and works with any email
+      const subject = encodeURIComponent(
+        `[طلب تواصل من الموقع] - ${validated.name}`,
+      );
+      const body = encodeURIComponent(
+        `الاسم: ${validated.name}\n` +
+          `الهاتف: ${validated.phone || "غير محدد"}\n` +
+          `البريد الإلكتروني: ${validated.email}\n\n` +
+          `الرسالة:\n${validated.message}`,
+      );
 
-        return fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          body: formDataToEach,
-        });
+      // Open user's mail app directly to the primary email from config
+      window.location.href = `mailto:${CONTACT_CONFIG.primaryEmail}?subject=${subject}&body=${body}`;
+
+      toast({
+        title: "✅ جاري فتح تطبيق البريد",
+        description: "يرجى الضغط على 'إرسال' في نافذة البريد التي ستظهر لك.",
       });
 
-      const responses = await Promise.all(sendPromises);
-      const dataResults = await Promise.all(responses.map((res) => res.json()));
-
-      if (dataResults.every((data) => data.success)) {
-        toast({
-          title: "✅ تم الإرسال بنجاح!",
-          description: "شكراً لتواصلك معنا. تم إبلاغ جميع المختصين برسالتك.",
-        });
-        setFormData({ name: "", email: "", phone: "", message: "" });
-      } else {
-        throw new Error("حدث خطأ في الإرسال");
-      }
+      setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (error) {
       console.error("Contact form error:", error);
       if (error instanceof z.ZodError) {
