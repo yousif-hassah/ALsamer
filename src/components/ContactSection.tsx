@@ -67,26 +67,33 @@ const ContactSection = () => {
         return;
       }
 
-      // Professional Mailto System: Bypasses verification and works with any email
-      const subject = encodeURIComponent(
-        `[طلب تواصل من الموقع] - ${validated.name}`,
-      );
-      const body = encodeURIComponent(
-        `الاسم: ${validated.name}\n` +
-          `الهاتف: ${validated.phone || "غير محدد"}\n` +
-          `البريد الإلكتروني: ${validated.email}\n\n` +
-          `الرسالة:\n${validated.message}`,
-      );
-
-      // Open user's mail app directly to the primary email from config
-      window.location.href = `mailto:${CONTACT_CONFIG.primaryEmail}?subject=${subject}&body=${body}`;
-
-      toast({
-        title: "✅ جاري فتح تطبيق البريد",
-        description: "يرجى الضغط على 'إرسال' في نافذة البريد التي ستظهر لك.",
+      // Professional Resend API System:
+      // Sends data to our secure serverless function on Vercel
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: validated.name,
+          email: validated.email,
+          phone: validated.phone || "N/A",
+          message: validated.message,
+          toEmail: CONTACT_CONFIG.primaryEmail,
+          subject: `[طلب تواصل] رسالة جديدة من ${validated.name}`,
+        }),
       });
 
-      setFormData({ name: "", email: "", phone: "", message: "" });
+      if (response.ok) {
+        toast({
+          title: "✅ تم الإرسال بنجاح!",
+          description: "شكراً لتواصلك معنا. سنرد عليك في أقرب وقت ممكن.",
+        });
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "فشل الإرسال عبر الخادم");
+      }
     } catch (error) {
       console.error("Contact form error:", error);
       if (error instanceof z.ZodError) {
@@ -98,7 +105,8 @@ const ContactSection = () => {
       } else {
         toast({
           title: "❌ فشل الإرسال",
-          description: "حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+          description:
+            "يرجى التأكد من ربط النطاق وإضافة RESEND_API_KEY في Vercel.",
           variant: "destructive",
         });
       }
