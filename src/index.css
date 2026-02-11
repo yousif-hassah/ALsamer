@@ -1,0 +1,343 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 15 90% 55%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 5 85% 45%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 15 90% 55%;
+
+    --radius: 1rem;
+
+    /* Custom logistics colors */
+    --deep-red: 0 75% 25%;
+    --burnt-orange: 20 85% 50%;
+    --warm-orange: 25 95% 55%;
+    --dark-surface: 0 0% 6%;
+    --glass-bg: 0 0% 10%;
+    --glass-border: 0 0% 20%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(
+      135deg,
+      hsl(0, 0%, 5%) 0%,
+      hsl(0, 60%, 15%) 50%,
+      hsl(15, 70%, 25%) 100%
+    );
+    --gradient-curve: linear-gradient(
+      180deg,
+      hsl(0, 70%, 25%) 0%,
+      hsl(15, 80%, 40%) 50%,
+      hsl(25, 90%, 50%) 100%
+    );
+    --gradient-glow: radial-gradient(
+      ellipse at center,
+      hsl(15, 80%, 40%, 0.4) 0%,
+      transparent 70%
+    );
+    --gradient-card: linear-gradient(
+      145deg,
+      hsl(0, 0%, 12%, 0.8) 0%,
+      hsl(0, 0%, 8%, 0.6) 100%
+    );
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: "Inter", sans-serif;
+  }
+}
+
+@layer components {
+  /* Glass Card Effect */
+  .glass-card {
+    @apply relative overflow-hidden rounded-2xl;
+    background: linear-gradient(
+      145deg,
+      hsla(0, 0%, 15%, 0.6) 0%,
+      hsla(0, 0%, 10%, 0.4) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsla(0, 0%, 25%, 0.3);
+    box-shadow:
+      0 8px 32px hsla(0, 0%, 0%, 0.4),
+      inset 0 1px 0 hsla(0, 0%, 100%, 0.05);
+  }
+
+  .glass-card-dark {
+    @apply relative overflow-hidden rounded-2xl;
+    background: linear-gradient(
+      145deg,
+      hsla(0, 0%, 10%, 0.8) 0%,
+      hsla(0, 0%, 6%, 0.6) 100%
+    );
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid hsla(0, 0%, 20%, 0.4);
+    box-shadow:
+      0 12px 48px hsla(0, 0%, 0%, 0.5),
+      inset 0 1px 0 hsla(0, 0%, 100%, 0.03);
+  }
+
+  .glass-card-warm {
+    @apply relative overflow-hidden rounded-2xl;
+    background: linear-gradient(
+      145deg,
+      hsla(15, 60%, 20%, 0.5) 0%,
+      hsla(0, 50%, 15%, 0.4) 100%
+    );
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid hsla(15, 50%, 30%, 0.3);
+    box-shadow:
+      0 8px 32px hsla(0, 0%, 0%, 0.4),
+      inset 0 1px 0 hsla(30, 80%, 60%, 0.1);
+  }
+
+  /* Flowing Curves Background */
+  .flowing-curves {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .curve-layer {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    left: -50%;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      hsl(0, 0%, 100%) 0%,
+      hsl(0, 0%, 80%) 100%
+    );
+  }
+
+  .gradient-text-warm {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      hsl(25, 90%, 60%) 0%,
+      hsl(15, 85%, 50%) 100%
+    );
+  }
+
+  /* Button Styles */
+  .btn-primary {
+    @apply relative px-6 py-3 rounded-xl font-semibold text-sm tracking-wide;
+    background: linear-gradient(
+      135deg,
+      hsl(15, 85%, 50%) 0%,
+      hsl(25, 90%, 55%) 100%
+    );
+    color: white;
+    box-shadow:
+      0 4px 20px hsla(15, 85%, 50%, 0.4),
+      inset 0 1px 0 hsla(0, 0%, 100%, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 30px hsla(15, 85%, 50%, 0.5),
+      inset 0 1px 0 hsla(0, 0%, 100%, 0.3);
+  }
+
+  .btn-outline {
+    @apply relative px-4 py-2 rounded-lg font-medium text-sm;
+    background: transparent;
+    border: 1px solid hsla(0, 0%, 100%, 0.2);
+    color: hsla(0, 0%, 100%, 0.9);
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline:hover {
+    background: hsla(0, 0%, 100%, 0.05);
+    border-color: hsla(0, 0%, 100%, 0.4);
+  }
+
+  /* Section Backgrounds */
+  .section-dark {
+    @apply relative;
+    background: linear-gradient(180deg, hsl(0, 0%, 5%) 0%, hsl(0, 0%, 3%) 100%);
+  }
+
+  .section-gradient {
+    @apply relative;
+    background: linear-gradient(
+      180deg,
+      hsl(0, 0%, 3%) 0%,
+      hsl(0, 40%, 8%) 30%,
+      hsl(5, 50%, 12%) 60%,
+      hsl(0, 0%, 5%) 100%
+    );
+  }
+
+  /* Glow Effects */
+  .glow-red {
+    box-shadow: 0 0 60px 20px hsla(0, 70%, 30%, 0.3);
+  }
+
+  .glow-orange {
+    box-shadow: 0 0 80px 30px hsla(20, 80%, 45%, 0.2);
+  }
+
+  /* Image Container */
+  .image-card {
+    @apply relative overflow-hidden rounded-xl;
+    box-shadow: 0 8px 32px hsla(0, 0%, 0%, 0.5);
+  }
+
+  /* Nav Link */
+  .nav-link {
+    @apply text-sm font-medium transition-colors duration-200;
+    color: hsla(0, 0%, 100%, 0.7);
+  }
+
+  .nav-link:hover {
+    color: hsla(0, 0%, 100%, 1);
+  }
+
+  /* Badge/Tag */
+  .tag {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+    background: hsla(0, 0%, 100%, 0.1);
+    color: hsla(0, 0%, 100%, 0.8);
+    border: 1px solid hsla(0, 0%, 100%, 0.1);
+  }
+
+  .tag-warm {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+    background: hsla(15, 80%, 50%, 0.2);
+    color: hsl(25, 90%, 65%);
+    border: 1px solid hsla(15, 80%, 50%, 0.3);
+  }
+
+  /* Stat Item */
+  .stat-row {
+    @apply flex justify-between items-center py-2;
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0.08);
+  }
+
+  .stat-row:last-child {
+    border-bottom: none;
+  }
+
+  /* Icon Container */
+  .icon-circle {
+    @apply flex items-center justify-center w-10 h-10 rounded-full;
+    background: linear-gradient(
+      135deg,
+      hsl(15, 80%, 45%) 0%,
+      hsl(25, 85%, 50%) 100%
+    );
+  }
+
+  .icon-circle-sm {
+    @apply flex items-center justify-center w-8 h-8 rounded-full;
+    background: hsla(0, 0%, 100%, 0.1);
+  }
+
+  /* Decorative Elements */
+  .dot-pattern {
+    background-image: radial-gradient(
+      hsla(0, 0%, 100%, 0.1) 1px,
+      transparent 1px
+    );
+    background-size: 20px 20px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(0, 0%, 5%);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(0, 0%, 20%);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(0, 0%, 30%);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* RTL Support */
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+html[dir="rtl"] .stat-row {
+  flex-direction: row-reverse;
+}
+
+/* Arabic Font Support */
+html[lang="ar"] body {
+  font-family: "Noto Sans Arabic", "Inter", system-ui, sans-serif;
+}
+
+/* Leaflet Map RTL fixes */
+.leaflet-container {
+  direction: ltr;
+}
