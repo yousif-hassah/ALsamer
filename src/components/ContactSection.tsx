@@ -67,46 +67,52 @@ const ContactSection = () => {
         return;
       }
 
-      // Professional Resend API System:
-      // Sends data to our secure serverless function on Vercel
-      const response = await fetch("/api/send-email", {
+      // Professional Web3Forms System:
+      // Sends data to Web3Forms API which then forwards it to the primary email
+      const formDataToSend = new FormData();
+      formDataToSend.append("access_key", WEB3FORMS_CONFIG.ACCESS_KEY);
+      formDataToSend.append("name", validated.name);
+      formDataToSend.append("email", validated.email);
+      formDataToSend.append("phone", validated.phone || "N/A");
+      formDataToSend.append("message", validated.message);
+      formDataToSend.append(
+        "subject",
+        `[رسالة جديدة من الموقع] - ${validated.name}`,
+      );
+      formDataToSend.append("from_name", "Al-Samer Logistics Website");
+
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: validated.name,
-          email: validated.email,
-          phone: validated.phone || "N/A",
-          message: validated.message,
-          toEmail: CONTACT_CONFIG.primaryEmail,
-          subject: `[طلب تواصل] رسالة جديدة من ${validated.name}`,
-        }),
+        body: formDataToSend,
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (data.success) {
         toast({
           title: "✅ تم الإرسال بنجاح!",
-          description: "شكراً لتواصلك معنا. سنرد عليك في أقرب وقت ممكن.",
+          description: isRTL
+            ? "شكراً لتواصلك معنا. تم استلام طلبك وسنقوم بالرد عليك في أقرب وقت."
+            : "Thank you for contacting us. Your message has been received.",
         });
         setFormData({ name: "", email: "", phone: "", message: "" });
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "فشل الإرسال عبر الخادم");
+        throw new Error(data.message || "فشل الإرسال عبر Web3Forms");
       }
     } catch (error) {
       console.error("Contact form error:", error);
       if (error instanceof z.ZodError) {
         toast({
-          title: "خطأ في التحقق",
+          title: isRTL ? "خطأ في التحقق" : "Validation Error",
           description: error.errors[0].message,
           variant: "destructive",
         });
       } else {
         toast({
-          title: "❌ فشل الإرسال",
-          description:
-            "يرجى التأكد من ربط النطاق وإضافة RESEND_API_KEY في Vercel.",
+          title: isRTL ? "❌ فشل الإرسال" : "❌ Sending Failed",
+          description: isRTL
+            ? "يرجى التحقق من مفتاح الوصول (Access Key) في ملف الإعدادات."
+            : "Please check your Access Key in the configuration file.",
           variant: "destructive",
         });
       }
@@ -116,7 +122,7 @@ const ContactSection = () => {
   };
 
   const handleEmailClick = (email: string) => {
-    // Open Gmail directly in a new tab
+    // Open Gmail directly in a new tab as per user request
     const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}`;
     window.open(gmailUrl, "_blank");
   };
