@@ -116,8 +116,9 @@ const ContactSection = () => {
   };
 
   const handleEmailClick = (email: string) => {
-    setSelectedEmail(email);
-    setIsEmailModalOpen(true);
+    // Open Gmail directly in a new tab
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}`;
+    window.open(gmailUrl, "_blank");
   };
 
   const handleEmailModalClose = () => {
