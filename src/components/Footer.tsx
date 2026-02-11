@@ -104,32 +104,11 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div
-          className={`pt-6 sm:pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 ${isRTL ? "sm:flex-row-reverse" : ""}`}
-        >
-          <div className="text-center sm:text-left">
+        <div className="pt-6 sm:pt-8 border-t border-white/5 flex flex-col items-center justify-center">
+          <div className="text-center">
             <p className="text-[10px] sm:text-xs text-white/40">
               {t("footer.rights")}
             </p>
-            <p className="text-[10px] sm:text-xs text-white/30 mt-0.5 sm:mt-1">
-              {t("footer.made")}
-            </p>
-          </div>
-          <div
-            className={`flex items-center gap-4 sm:gap-6 ${isRTL ? "flex-row-reverse" : ""}`}
-          >
-            <a
-              href="#"
-              className="text-[10px] sm:text-xs text-white/40 hover:text-white/70 transition-colors"
-            >
-              {t("footer.privacy")}
-            </a>
-            <a
-              href="#"
-              className="text-[10px] sm:text-xs text-white/40 hover:text-white/70 transition-colors"
-            >
-              {t("footer.terms")}
-            </a>
           </div>
         </div>
       </div>
