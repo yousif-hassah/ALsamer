@@ -116,13 +116,8 @@ const ContactSection = () => {
   };
 
   const handleEmailClick = (email: string) => {
-    const subject = encodeURIComponent(
-      "Contact from Al-Samer Logistics Website",
-    );
-    const body = encodeURIComponent(
-      "Hello,\n\nI am contacting you regarding...",
-    );
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    setSelectedEmail(email);
+    setIsEmailModalOpen(true);
   };
 
   const handleEmailModalClose = () => {
@@ -164,50 +159,39 @@ const ContactSection = () => {
         return;
       }
 
-      // Send email using Web3Forms
-      const formData = new FormData();
-      formData.append("access_key", WEB3FORMS_CONFIG.ACCESS_KEY);
-      formData.append("name", emailFormData.name);
-      formData.append("email", emailFormData.email);
-
-      // For the Modal: We still send to the verified primary email from config
-      // BUT we clearly label the intended recipient in the subject
-      formData.append("to_email", CONTACT_CONFIG.primaryEmail);
-
-      formData.append("message", emailFormData.message);
-      formData.append(
-        "subject",
-        `[مخصص لـ: ${selectedEmail}] رسالة من ${emailFormData.name}`,
-      );
-
-      formData.append("from_name", "Al-Samer Logistics");
-      formData.append("replyto", emailFormData.email);
-      // Helpful metadata in the body
-      formData.append("intended_recipient", selectedEmail);
-
-      const response = await fetch("https://api.web3forms.com/submit", {
+      // Professional Resend API System:
+      const response = await fetch("/api/send-email", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: emailFormData.name,
+          email: emailFormData.email,
+          message: emailFormData.message,
+          toEmail: selectedEmail,
+          subject: `[رسالة خاصة] من ${emailFormData.name} عبر الموقع`,
+        }),
       });
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.ok) {
         toast({
           title: "✅ تم الإرسال بنجاح!",
           description: isRTL
-            ? `تم إرسال رسالتك بنجاح إلى فريقنا المختص بـ ${selectedEmail}`
-            : `Your message has been sent successfully to our staff at ${selectedEmail}`,
+            ? `تم إرسال رسالتك بنجاح إلى فريقنا بـ ${selectedEmail}`
+            : `Your message has been sent successfully to ${selectedEmail}`,
         });
         handleEmailModalClose();
       } else {
-        throw new Error(data.message || "فشل الإرسال");
+        throw new Error("فشل الإرسال عبر الخادم");
       }
     } catch (error) {
       console.error("Email sending error:", error);
       toast({
         title: "❌ فشل الإرسال",
-        description: "حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+        description: isRTL
+          ? "يرجى التأكد من إعدادات Resend في Vercel."
+          : "Please verify Resend configuration in Vercel.",
         variant: "destructive",
       });
     }
