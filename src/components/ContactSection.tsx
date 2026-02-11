@@ -124,8 +124,13 @@ const ContactSection = () => {
   };
 
   const handleEmailClick = (email: string) => {
-    setSelectedEmail(email);
-    setIsEmailModalOpen(true);
+    const subject = encodeURIComponent(
+      "Contact from Al-Samer Logistics Website",
+    );
+    const body = encodeURIComponent(
+      "Hello,\n\nI am contacting you regarding...",
+    );
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
   };
 
   const handleEmailModalClose = () => {
