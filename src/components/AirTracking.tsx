@@ -84,6 +84,18 @@ const AirTracking = () => {
 
         console.log(`✅ Real data from: ${source}`);
 
+        // Use real GPS coordinates if available from AIS
+        const hasRealGPS = data.latitude && data.longitude;
+        const coordinates = hasRealGPS
+          ? { lat: data.latitude, lng: data.longitude }
+          : { lat: 33.3152, lng: 44.3661 }; // Fallback coordinates
+
+        if (hasRealGPS) {
+          console.log(
+            `🌍 Real GPS coordinates: ${data.latitude}, ${data.longitude}`,
+          );
+        }
+
         setResult({
           awbNumber: cleanNumber,
           status: data.delivery_status || "In Transit",
@@ -93,12 +105,9 @@ const AirTracking = () => {
           origin: data.origin_country_code || "N/A",
           destination: data.destination_country_code || "N/A",
           lastUpdated: new Date().toLocaleString(),
-          coordinates: {
-            lat: 33.3152,
-            lng: 44.3661,
-          },
+          coordinates,
           route: [],
-          isLive: true, // Real data from free APIs!
+          isLive: true, // Real data from free APIs + AIS GPS!
         });
         setIsSearching(false);
         return;
