@@ -69,6 +69,8 @@ const AirTracking = () => {
         await fetch(
           `/api/tracking?action=create&trackingNumber=${cleanNumber}`,
         );
+        // Wait for TrackingMore to fetch data from the carrier (usually takes 2-5 seconds)
+        await new Promise((resolve) => setTimeout(resolve, 4000));
       } catch (e) {
         console.log(
           "Tracking already exists or creation failed, proceeding to fetch...",
