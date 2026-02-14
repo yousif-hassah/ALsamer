@@ -63,27 +63,13 @@ const ContainerTracking = () => {
     setIsSearching(true);
 
     try {
-      // Use the serverless function proxy to avoid CORS issues
-      // Step 1: Try to create/register the tracking number first
-      try {
-        await fetch(
-          `/api/tracking?action=create&trackingNumber=${cleanNumber}&courierCode=ocean`,
-        );
-        // Wait for TrackingMore to fetch data from the carrier (usually takes 2-5 seconds)
-        await new Promise((resolve) => setTimeout(resolve, 4000));
-      } catch (e) {
-        console.log(
-          "Tracking already exists or creation failed, proceeding to fetch...",
-        );
-      }
-
-      // Step 2: Fetch the tracking data through the proxy
+      // New hybrid system: tries 4 free sources automatically before simulation
       const response = await fetch(
         `/api/tracking?trackingNumber=${cleanNumber}`,
       );
 
       if (!response.ok) {
-        throw new Error("TrackingMore API Error");
+        throw new Error("API Error");
       }
 
       const apiResult = await response.json();
@@ -94,6 +80,10 @@ const ContainerTracking = () => {
         apiResult.data.length > 0
       ) {
         const data = apiResult.data[0];
+        const source = apiResult.source || "unknown";
+
+        console.log(`✅ Real data from: ${source}`);
+
         setResult({
           containerNumber: cleanNumber,
           status: data.delivery_status || "In Transit",
@@ -108,12 +98,12 @@ const ContainerTracking = () => {
             lng: 55.0,
           },
           route: [],
-          isLive: true,
+          isLive: true, // Real data from free APIs!
         });
         setIsSearching(false);
         return;
       } else {
-        throw new Error("No data found in TrackingMore");
+        throw new Error("No data found - falling back to simulation");
       }
     } catch (error) {
       console.log("Falling back to simulation:", error);
