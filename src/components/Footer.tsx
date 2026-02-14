@@ -84,7 +84,7 @@ const Footer = () => {
               className={`flex items-center gap-4 pt-2 ${isRTL ? "justify-end" : "justify-start"}`}
             >
               <a
-                href="#"
+                href="https://www.instagram.com/alsamer_iq?igsh=Z2NoOGNheXcyZmxw"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/50 hover:text-white transition-colors"
@@ -92,7 +92,7 @@ const Footer = () => {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/profile.php?id=61577809550949&mibextid=wwXIfr&mibextid=wwXIfr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/50 hover:text-white transition-colors"
