@@ -63,37 +63,21 @@ const ContainerTracking = () => {
     setIsSearching(true);
 
     try {
-      const apiKey = import.meta.env.VITE_TRACKINGMORE_API_KEY;
-
-      // Step 1: Try to create/register the tracking number first (so it exists in TrackingMore)
-      // This allows the system to work even if you haven't added the number manually
+      // Use the serverless function proxy to avoid CORS issues
+      // Step 1: Try to create/register the tracking number first
       try {
-        await fetch("https://api.trackingmore.com/v4/trackings/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Tracking-Api-Key": apiKey,
-          },
-          body: JSON.stringify({
-            tracking_number: cleanNumber,
-            courier_code: "ocean", // Default for containers, or omit for auto-detect
-          }),
-        });
+        await fetch(
+          `/api/tracking?action=create&trackingNumber=${cleanNumber}&courierCode=ocean`,
+        );
       } catch (e) {
         console.log(
           "Tracking already exists or creation failed, proceeding to fetch...",
         );
       }
 
-      // Step 2: Fetch the tracking data
+      // Step 2: Fetch the tracking data through the proxy
       const response = await fetch(
-        `https://api.trackingmore.com/v4/trackings/get?tracking_numbers=${cleanNumber}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Tracking-Api-Key": apiKey,
-          },
-        },
+        `/api/tracking?trackingNumber=${cleanNumber}`,
       );
 
       if (!response.ok) {
