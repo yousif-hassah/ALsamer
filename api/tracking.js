@@ -16,7 +16,9 @@ export default async function handler(req, res) {
   }
 
   const { action, trackingNumber, courierCode } = req.query;
-  const apiKey = process.env.VITE_TRACKINGMORE_API_KEY;
+  // Use TRACKINGMORE_API_KEY for serverless functions (not VITE_ prefix)
+  const apiKey =
+    process.env.TRACKINGMORE_API_KEY || process.env.VITE_TRACKINGMORE_API_KEY;
 
   if (!apiKey) {
     return res.status(500).json({ error: "API key not configured" });
