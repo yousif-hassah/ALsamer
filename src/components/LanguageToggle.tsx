@@ -7,11 +7,11 @@ const LanguageToggle = () => {
   return (
     <div className="flex items-center gap-1 rounded-full p-1 bg-white/5 border border-white/10">
       <motion.button
-        onClick={() => setLanguage('ar')}
+        onClick={() => setLanguage("ar")}
         className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
-          language === 'ar'
-            ? 'bg-gradient-to-r from-primary to-warm-orange text-white'
-            : 'text-white/60 hover:text-white'
+          language === "ar"
+            ? "bg-gradient-to-r from-primary to-soft-yellow text-background"
+            : "text-white/60 hover:text-white"
         }`}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -19,11 +19,11 @@ const LanguageToggle = () => {
         AR
       </motion.button>
       <motion.button
-        onClick={() => setLanguage('en')}
+        onClick={() => setLanguage("en")}
         className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
-          language === 'en'
-            ? 'bg-gradient-to-r from-primary to-warm-orange text-white'
-            : 'text-white/60 hover:text-white'
+          language === "en"
+            ? "bg-gradient-to-r from-primary to-soft-yellow text-background"
+            : "text-white/60 hover:text-white"
         }`}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}

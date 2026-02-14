@@ -110,6 +110,27 @@ const translations: Record<Language, Record<string, string>> = {
     "tracking.error": "Unable to fetch tracking data. Please try again later.",
     "tracking.invalid": "Please enter a valid container number.",
 
+    // Air Tracking Section
+    "airtracking.tag": "Air Cargo Tracking",
+    "airtracking.title": "Track Your Air Shipment Worldwide",
+    "airtracking.subtitle":
+      "Enter your Air Waybill (AWB) number to get real-time tracking information and see your shipment location on the map.",
+    "airtracking.placeholder": "Enter AWB number (e.g., 123-12345678)",
+    "airtracking.button": "Track Shipment",
+    "airtracking.searching": "Searching...",
+    "airtracking.status": "Status",
+    "airtracking.location": "Current Location",
+    "airtracking.updated": "Last Updated",
+    "airtracking.flight": "Flight",
+    "airtracking.eta": "ETA",
+    "airtracking.origin": "Origin",
+    "airtracking.destination": "Destination",
+    "airtracking.notfound":
+      "AWB number not found. Please check the number and try again.",
+    "airtracking.error":
+      "Unable to fetch tracking data. Please try again later.",
+    "airtracking.invalid": "Please enter a valid AWB number.",
+
     // Why Choose Us Section
     "why.tag": "Why Choose Us",
     "why.title": "Your Trusted Logistics Partner",
@@ -263,6 +284,27 @@ const translations: Record<Language, Record<string, string>> = {
       "رقم الحاوية غير موجود. يرجى التحقق من الرقم والمحاولة مرة أخرى.",
     "tracking.error": "تعذر جلب بيانات التتبع. يرجى المحاولة مرة أخرى لاحقًا.",
     "tracking.invalid": "يرجى إدخال رقم حاوية صالح.",
+
+    // Air Tracking Section
+    "airtracking.tag": "تتبع الشحن الجوي",
+    "airtracking.title": "تتبع شحنتك الجوية في جميع أنحاء العالم",
+    "airtracking.subtitle":
+      "أدخل رقم بوليصة الشحن الجوي (AWB) للحصول على معلومات التتبع في الوقت الفعلي ومشاهدة موقع شحنتك على الخريطة.",
+    "airtracking.placeholder": "أدخل رقم AWB (مثال: 123-12345678)",
+    "airtracking.button": "تتبع الشحنة",
+    "airtracking.searching": "جاري البحث...",
+    "airtracking.status": "الحالة",
+    "airtracking.location": "الموقع الحالي",
+    "airtracking.updated": "آخر تحديث",
+    "airtracking.flight": "الرحلة",
+    "airtracking.eta": "وقت الوصول المتوقع",
+    "airtracking.origin": "المنشأ",
+    "airtracking.destination": "الوجهة",
+    "airtracking.notfound":
+      "رقم AWB غير موجود. يرجى التحقق من الرقم والمحاولة مرة أخرى.",
+    "airtracking.error":
+      "تعذر جلب بيانات التتبع. يرجى المحاولة مرة أخرى لاحقًا.",
+    "airtracking.invalid": "يرجى إدخال رقم AWB صالح.",
 
     // Why Choose Us Section
     "why.tag": "لماذا تختارنا",

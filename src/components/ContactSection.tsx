@@ -218,7 +218,7 @@ const ContactSection = () => {
       id="contact"
       className="relative py-16 sm:py-20 lg:py-24 bg-background overflow-hidden"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-[hsl(0,40%,8%)] to-background opacity-50" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-[hsl(45,50%,15%)] to-background opacity-50" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
@@ -360,7 +360,7 @@ const ContactSection = () => {
               <div
                 className={`flex items-start gap-3 sm:gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary/20 to-warm-orange/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary/20 to-soft-yellow/10 flex items-center justify-center flex-shrink-0">
                   <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
                 <div className={`flex-1 ${isRTL ? "text-right" : "text-left"}`}>
@@ -395,7 +395,7 @@ const ContactSection = () => {
               <div
                 className={`flex items-start gap-3 sm:gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary/20 to-warm-orange/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary/20 to-soft-yellow/10 flex items-center justify-center flex-shrink-0">
                   <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
                 <div className={`flex-1 ${isRTL ? "text-right" : "text-left"}`}>
@@ -432,7 +432,7 @@ const ContactSection = () => {
               <div
                 className={`flex items-start gap-3 sm:gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
               >
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary/20 to-warm-orange/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary/20 to-soft-yellow/10 flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
                 <div className={`flex-1 ${isRTL ? "text-right" : "text-left"}`}>
@@ -466,7 +466,7 @@ const ContactSection = () => {
 
       {/* Email Modal */}
       <Dialog open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen}>
-        <DialogContent className="bg-[hsl(0,40%,8%)] border-white/10 text-white max-w-md">
+        <DialogContent className="bg-[hsl(45,50%,15%)] border-white/10 text-white max-w-md">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-white">
               {t("contact.modal.title")}

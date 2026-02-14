@@ -54,7 +54,10 @@ const WhyChooseUsSection = () => {
   };
 
   return (
-    <section id="why-us" className="relative py-16 sm:py-20 lg:py-24 overflow-hidden section-gradient">
+    <section
+      id="why-us"
+      className="relative py-16 sm:py-20 lg:py-24 overflow-hidden bg-[hsl(45,50%,15%)]"
+    >
       <FlowingCurves variant="why-us" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
@@ -64,9 +67,11 @@ const WhyChooseUsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className={`mb-8 sm:mb-12 lg:mb-16 ${isRTL ? 'text-right' : ''}`}
+          className={`mb-8 sm:mb-12 lg:mb-16 ${isRTL ? "text-right" : ""}`}
         >
-          <span className="tag-warm mb-3 sm:mb-4 inline-block text-[10px] sm:text-xs">{t("why.tag")}</span>
+          <span className="tag-warm bg-primary/20 text-primary border-primary/30 mb-3 sm:mb-4 inline-block text-[10px] sm:text-xs">
+            {t("why.tag")}
+          </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
             {t("why.title")}
           </h2>
@@ -86,8 +91,10 @@ const WhyChooseUsSection = () => {
               variants={itemVariants}
               className="glass-card-dark p-4 sm:p-6 transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1"
             >
-              <div className={`flex items-start gap-3 sm:gap-4 ${isRTL ? 'flex-row-reverse text-right' : ''}`}>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary/20 to-warm-orange/10 flex items-center justify-center flex-shrink-0">
+              <div
+                className={`flex items-start gap-3 sm:gap-4 ${isRTL ? "flex-row-reverse text-right" : ""}`}
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary/20 to-soft-yellow/10 flex items-center justify-center flex-shrink-0">
                   <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
                 <div className="min-w-0">
