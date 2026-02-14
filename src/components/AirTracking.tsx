@@ -65,6 +65,25 @@ const AirTracking = () => {
     try {
       const apiKey = import.meta.env.VITE_TRACKINGMORE_API_KEY;
 
+      // Step 1: Try to create/register the tracking number first
+      try {
+        await fetch("https://api.trackingmore.com/v4/trackings/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Tracking-Api-Key": apiKey,
+          },
+          body: JSON.stringify({
+            tracking_number: cleanNumber,
+          }),
+        });
+      } catch (e) {
+        console.log(
+          "Tracking already exists or creation failed, proceeding to fetch...",
+        );
+      }
+
+      // Step 2: Fetch the tracking data
       const response = await fetch(
         `https://api.trackingmore.com/v4/trackings/get?tracking_numbers=${cleanNumber}`,
         {

@@ -65,8 +65,27 @@ const ContainerTracking = () => {
     try {
       const apiKey = import.meta.env.VITE_TRACKINGMORE_API_KEY;
 
-      // TrackingMore API V4 endpoint
-      // Note: Client-side calls might face CORS; this structure is ready for server-side proxying
+      // Step 1: Try to create/register the tracking number first (so it exists in TrackingMore)
+      // This allows the system to work even if you haven't added the number manually
+      try {
+        await fetch("https://api.trackingmore.com/v4/trackings/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Tracking-Api-Key": apiKey,
+          },
+          body: JSON.stringify({
+            tracking_number: cleanNumber,
+            courier_code: "ocean", // Default for containers, or omit for auto-detect
+          }),
+        });
+      } catch (e) {
+        console.log(
+          "Tracking already exists or creation failed, proceeding to fetch...",
+        );
+      }
+
+      // Step 2: Fetch the tracking data
       const response = await fetch(
         `https://api.trackingmore.com/v4/trackings/get?tracking_numbers=${cleanNumber}`,
         {
@@ -99,7 +118,7 @@ const ContainerTracking = () => {
           destination: data.destination_country_code || "N/A",
           lastUpdated: new Date().toLocaleString(),
           coordinates: {
-            lat: 25.0, // TrackingMore sometimes provides city coords, fallback to general area
+            lat: 25.0,
             lng: 55.0,
           },
           route: [],
