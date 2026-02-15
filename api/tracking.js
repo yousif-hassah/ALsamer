@@ -45,7 +45,22 @@ export default async function handler(req, res) {
 
     // If we got container data, enhance it with real GPS coordinates from AIS
     if (containerData) {
-      const vesselName = containerData.vessel_name;
+      let vesselName = containerData.vessel_name;
+
+      // If vessel name is not available, try to find a real vessel from the carrier
+      if (!vesselName || vesselName === "N/A") {
+        console.log(`🔍 Vessel name not available, detecting carrier...`);
+        const carrier = detectCarrier(trackingNumber);
+        if (carrier) {
+          console.log(`🚢 Detected carrier: ${carrier}`);
+          const realVessel = await findRealVesselFromCarrier(carrier);
+          if (realVessel) {
+            vesselName = realVessel.name;
+            containerData.vessel_name = realVessel.name;
+            console.log(`✅ Found real vessel: ${realVessel.name}`);
+          }
+        }
+      }
 
       if (vesselName && vesselName !== "N/A") {
         console.log(`🚢 Fetching real GPS for vessel: ${vesselName}`);
@@ -311,6 +326,18 @@ async function tryMyShipTracking(vesselName) {
     }
   } catch (e) {
     console.log("MyShipTracking failed:", e.message);
+  }
+  return null;
+}
+
+// Find Real Vessel from Carrier
+async function findRealVesselFromCarrier(carrier) {
+  const vessels = { 'msc': ['MSC EUROPA'], 'maersk': ['MAERSK ESSEX'], 'cma-cgm': ['CMA CGM LAGOS'] };
+  const names = vessels[carrier];
+  if (!names) return null;
+  for (const name of names) {
+    const pos = await getVesselPositionFromAIS(name);
+    if (pos) return { name, position: pos };
   }
   return null;
 }
