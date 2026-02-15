@@ -125,14 +125,29 @@ export default async function handler(req, res) {
     }
 
     // All sources failed - return empty to trigger simulation
-    return res
-      .status(200)
-      .json({ code: 404, data: [], message: "No data found" });
+    // Include diagnostic info for debugging
+    return res.status(200).json({
+      code: 404,
+      data: [],
+      message: "No data found",
+      debug: {
+        shipresolve_key_exists: !!process.env.SHIPRESOLVE_API_KEY,
+        vite_key_exists: !!process.env.VITE_SHIPRESOLVE_API_KEY,
+        timestamp: new Date().toISOString(),
+      },
+    });
   } catch (error) {
     console.error("Tracking API Error:", error);
-    return res
-      .status(200)
-      .json({ code: 404, data: [], message: "No data found" });
+    return res.status(200).json({
+      code: 404,
+      data: [],
+      message: "No data found",
+      error: error.message,
+      debug: {
+        shipresolve_key_exists: !!process.env.SHIPRESOLVE_API_KEY,
+        vite_key_exists: !!process.env.VITE_SHIPRESOLVE_API_KEY,
+      },
+    });
   }
 }
 
