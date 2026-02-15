@@ -141,10 +141,27 @@ async function tryShipResolve(trackingNumber) {
   try {
     const apiKey =
       process.env.VITE_SHIPRESOLVE_API_KEY || process.env.SHIPRESOLVE_API_KEY;
+
+    // Diagnostic logging
+    console.log("🔑 API Key Check:");
+    console.log(
+      "  - VITE_SHIPRESOLVE_API_KEY exists?",
+      !!process.env.VITE_SHIPRESOLVE_API_KEY,
+    );
+    console.log(
+      "  - SHIPRESOLVE_API_KEY exists?",
+      !!process.env.SHIPRESOLVE_API_KEY,
+    );
+    console.log("  - Final apiKey exists?", !!apiKey);
+
     if (!apiKey) {
-      console.log("ShipResolve API Key missing");
+      console.error(
+        "❌ ShipResolve API Key missing! Check Vercel Environment Variables.",
+      );
       return null;
     }
+
+    console.log("✅ ShipResolve API Key found, proceeding...");
 
     // Attempting to track/get status from ShipResolve
     const getUrl = `https://api.shipresolve.com/v1/tracking/${trackingNumber}`;
