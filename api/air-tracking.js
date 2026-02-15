@@ -117,19 +117,19 @@ async function tryShipResolve(trackingNumber) {
     }
 
     const getUrl = `https://api.shipresolve.com/v1/tracking/${trackingNumber}`;
-    console.log(`🔗 Requesting ShipResolve (Air): ${getUrl}`);
+    console.log(`🔗 Checking ShipResolve (Air) for: ${trackingNumber}`);
 
     const response = await fetch(getUrl, {
       headers: {
         Authorization: `Bearer ${apiKey}`,
         Accept: "application/json",
       },
-      timeout: 4000,
+      timeout: 5000,
     });
 
     if (response.ok) {
       const result = await response.json();
-      console.log(`✅ ShipResolve (Air) Found for ${trackingNumber}`);
+      console.log(`✅ ShipResolve (Air) GET Success for ${trackingNumber}`);
       const data = result.data || result;
 
       // Check if it's air cargo (AWB format)
@@ -144,9 +144,10 @@ async function tryShipResolve(trackingNumber) {
         latitude: data.lat || null,
         longitude: data.lng || null,
       };
-    } else if (response.status === 404) {
+    }
+
+    if (response.status === 404) {
       console.log(`ℹ️ Air Number ${trackingNumber} not found. Registering...`);
-      // Auto-create tracking on ShipResolve
       const createResponse = await fetch(
         `https://api.shipresolve.com/v1/tracking`,
         {
@@ -159,12 +160,26 @@ async function tryShipResolve(trackingNumber) {
             tracking_number: trackingNumber,
             carrier: "auto-detect",
           }),
-          timeout: 4000,
+          timeout: 6000,
         },
       );
 
       if (createResponse.ok) {
-        console.log(`🚀 Successfully registered Air ${trackingNumber}.`);
+        const result = await createResponse.json();
+        console.log(`🚀 ShipResolve (Air) POST Success`);
+        const data = result.data || result;
+        return {
+          delivery_status:
+            data.status_description || data.status || "In Transit",
+          last_event:
+            data.last_event_description || data.location || "Processing",
+          flight_number: data.flight_number || data.vessel || trackingNumber,
+          scheduled_delivery_date: data.expected_delivery || data.eta || "N/A",
+          origin_country_code: data.origin_country || "N/A",
+          destination_country_code: data.destination_country || "N/A",
+          latitude: data.lat || null,
+          longitude: data.lng || null,
+        };
       }
     }
   } catch (e) {

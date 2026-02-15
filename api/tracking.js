@@ -135,28 +135,27 @@ async function tryShipResolve(trackingNumber) {
     }
 
     // Attempting to track/get status from ShipResolve
-    // Correct endpoint is singular 'tracking'
     const getUrl = `https://api.shipresolve.com/v1/tracking/${trackingNumber}`;
-    console.log(`🔗 Requesting ShipResolve: ${getUrl}`);
+    console.log(`🔗 Checking ShipResolve for: ${trackingNumber}`);
 
     let response = await fetch(getUrl, {
       headers: {
         Authorization: `Bearer ${apiKey}`,
         Accept: "application/json",
       },
-      timeout: 4000,
+      timeout: 5000,
     });
 
     if (response.ok) {
       const result = await response.json();
-      console.log(`✅ ShipResolve Data Found for ${trackingNumber}`);
+      console.log(`✅ ShipResolve GET Success for ${trackingNumber}`);
       const data = result.data || result;
       return normalizeData(data, "shipresolve");
-    } else if (response.status === 404) {
-      console.log(
-        `ℹ️ Number ${trackingNumber} not found. Registering with ShipResolve...`,
-      );
-      // Auto-create tracking on ShipResolve if not found
+    }
+
+    // If not found (404), create/register it
+    if (response.status === 404) {
+      console.log(`ℹ️ Record not found. Registering ${trackingNumber}...`);
       const createResponse = await fetch(
         `https://api.shipresolve.com/v1/tracking`,
         {
@@ -167,25 +166,27 @@ async function tryShipResolve(trackingNumber) {
           },
           body: JSON.stringify({
             tracking_number: trackingNumber,
-            carrier: "auto-detect", // Crucial for auto-registration
+            carrier: "auto-detect",
           }),
-          timeout: 4000,
+          timeout: 6000,
         },
       );
 
       if (createResponse.ok) {
-        console.log(
-          `🚀 Successfully registered ${trackingNumber}. Consumption should now start.`,
-        );
-        // Note: Data might not be available immediately after POST,
-        // but it triggers the system to start tracking.
+        const result = await createResponse.json();
+        console.log(`🚀 ShipResolve POST Success (Registered and Fetched)`);
+        const data = result.data || result;
+        // If POST returns data, return it immediately to avoid 0 consumption display
+        return normalizeData(data, "shipresolve");
       } else {
         const errText = await createResponse.text();
-        console.log(`❌ Failed to register ${trackingNumber}: ${errText}`);
+        console.error(`❌ ShipResolve Registration Failed: ${errText}`);
       }
     } else {
       const errText = await response.text();
-      console.log(`❌ ShipResolve GET failed (${response.status}): ${errText}`);
+      console.error(
+        `❌ ShipResolve API Error (${response.status}): ${errText}`,
+      );
     }
   } catch (e) {
     console.log("ShipResolve failed:", e.message);
