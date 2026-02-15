@@ -341,3 +341,4 @@ async function findRealVesselFromCarrier(carrier) {
   }
   return null;
 }
+
