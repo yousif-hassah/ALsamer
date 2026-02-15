@@ -109,7 +109,8 @@ export default async function handler(req, res) {
 // ShipResolve API Integration
 async function tryShipResolve(trackingNumber) {
   try {
-    const apiKey = process.env.VITE_SHIPRESOLVE_API_KEY;
+    const apiKey =
+      process.env.VITE_SHIPRESOLVE_API_KEY || process.env.SHIPRESOLVE_API_KEY;
     if (!apiKey) {
       console.log("ShipResolve API Key missing");
       return null;
@@ -119,7 +120,7 @@ async function tryShipResolve(trackingNumber) {
       `https://api.shipresolve.com/v1/trackings/${trackingNumber}`,
       {
         headers: {
-          "api-key": apiKey,
+          Authorization: `Bearer ${apiKey}`,
           Accept: "application/json",
         },
         timeout: 4000,
@@ -147,7 +148,7 @@ async function tryShipResolve(trackingNumber) {
       await fetch(`https://api.shipresolve.com/v1/trackings`, {
         method: "POST",
         headers: {
-          "api-key": apiKey,
+          Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
