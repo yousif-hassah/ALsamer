@@ -25,10 +25,18 @@ export default async function handler(req, res) {
     let airData = null;
     let source = "unknown";
 
-    // Source 1: Try AviationStack (Free - 100/month)
-    airData = await tryAviationStack(trackingNumber);
+    // Source 0: Try ShipResolve (New primary source)
+    airData = await tryShipResolve(trackingNumber);
     if (airData) {
-      source = "aviationstack";
+      source = "shipresolve";
+    }
+
+    // Source 1: Try AviationStack (Free - 100/month)
+    if (!airData) {
+      airData = await tryAviationStack(trackingNumber);
+      if (airData) {
+        source = "aviationstack";
+      }
     }
 
     // Source 2: Try FlightLabs (Free)
@@ -79,6 +87,62 @@ export default async function handler(req, res) {
       .status(200)
       .json({ code: 404, data: [], message: "No data found" });
   }
+}
+
+// ShipResolve API Integration
+async function tryShipResolve(trackingNumber) {
+  try {
+    const apiKey = process.env.VITE_SHIPRESOLVE_API_KEY;
+    if (!apiKey) {
+      console.log("ShipResolve API Key missing");
+      return null;
+    }
+
+    const response = await fetch(
+      `https://api.shipresolve.com/v1/trackings/${trackingNumber}`,
+      {
+        headers: {
+          "api-key": apiKey,
+          Accept: "application/json",
+        },
+        timeout: 4000,
+      },
+    );
+
+    if (response.ok) {
+      const result = await response.json();
+      const data = result.data || result;
+
+      // Check if it's air cargo (AWB format)
+      return {
+        delivery_status: data.status_description || data.status || "In Transit",
+        last_event:
+          data.last_event_description || data.location || "Processing",
+        flight_number: data.flight_number || data.vessel || trackingNumber,
+        scheduled_delivery_date: data.expected_delivery || data.eta || "N/A",
+        origin_country_code: data.origin_country || "N/A",
+        destination_country_code: data.destination_country || "N/A",
+        latitude: data.lat || null,
+        longitude: data.lng || null,
+      };
+    } else if (response.status === 404) {
+      // Auto-create tracking on ShipResolve
+      await fetch(`https://api.shipresolve.com/v1/trackings`, {
+        method: "POST",
+        headers: {
+          "api-key": apiKey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tracking_number: trackingNumber,
+        }),
+        timeout: 4000,
+      });
+    }
+  } catch (e) {
+    console.log("ShipResolve Air failed:", e.message);
+  }
+  return null;
 }
 
 // ============================================

@@ -21,9 +21,15 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Source 0: Try ShipResolve (New primary source)
+    let containerData = await tryShipResolve(trackingNumber);
+    let source = "shipresolve";
+
     // Source 1: Try Terminal49 (Free for 100 containers)
-    let containerData = await tryTerminal49(trackingNumber);
-    let source = "terminal49";
+    if (!containerData) {
+      containerData = await tryTerminal49(trackingNumber);
+      source = "terminal49";
+    }
 
     // Source 2: Try findTEU (Free for 10/month)
     if (!containerData) {
@@ -53,7 +59,10 @@ export default async function handler(req, res) {
         const carrier = detectCarrier(trackingNumber);
         if (carrier) {
           console.log(`🚢 Detected carrier: ${carrier}`);
-          const realVessel = await findRealVesselFromCarrier(carrier, trackingNumber);
+          const realVessel = await findRealVesselFromCarrier(
+            carrier,
+            trackingNumber,
+          );
           if (realVessel) {
             vesselName = realVessel.name;
             containerData.vessel_name = realVessel.name;
@@ -94,6 +103,57 @@ export default async function handler(req, res) {
       .status(200)
       .json({ code: 404, data: [], message: "No data found" });
   }
+}
+
+// ShipResolve API Integration
+async function tryShipResolve(trackingNumber) {
+  try {
+    const apiKey = process.env.VITE_SHIPRESOLVE_API_KEY;
+    if (!apiKey) {
+      console.log("ShipResolve API Key missing");
+      return null;
+    }
+
+    // Attempting to track/get status from ShipResolve
+    // Using their standard GET tracking endpoint
+    const response = await fetch(
+      `https://api.shipresolve.com/v1/trackings/${trackingNumber}`,
+      {
+        headers: {
+          "api-key": apiKey,
+          Accept: "application/json",
+        },
+        timeout: 4000,
+      },
+    );
+
+    if (response.ok) {
+      const result = await response.json();
+      // ShipResolve usually returns data in a 'data' object or directly
+      const data = result.data || result;
+      return normalizeData(data, "shipresolve");
+    } else if (response.status === 404) {
+      // If not found, we might need to "create" the tracking first
+      // But for a simple demo-to-real transition, we'll try to create it automatically
+      await fetch(`https://api.shipresolve.com/v1/trackings`, {
+        method: "POST",
+        headers: {
+          "api-key": apiKey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tracking_number: trackingNumber,
+        }),
+        timeout: 4000,
+      });
+      // We return null here because the first call failed,
+      // but the next time the user searches, it might be ready.
+      // Or we could wait, but that might slow down the UI.
+    }
+  } catch (e) {
+    console.log("ShipResolve failed:", e.message);
+  }
+  return null;
 }
 
 // Terminal49 API (Free - 100 containers)
@@ -211,6 +271,20 @@ function parseCarrierHTML(html, carrier, containerNumber) {
 
 // Normalize data from different sources to a common format
 function normalizeData(data, source) {
+  // Handle ShipResolve format
+  if (source === "shipresolve") {
+    return {
+      delivery_status: data.status_description || data.status || "In Transit",
+      last_event: data.last_event_description || data.location || "Processing",
+      vessel_name: data.vessel_name || data.vessel || "N/A",
+      scheduled_delivery_date: data.expected_delivery || data.eta || "N/A",
+      origin_country_code: data.origin_country || "N/A",
+      destination_country_code: data.destination_country || "N/A",
+      latitude: data.lat || null,
+      longitude: data.lng || null,
+    };
+  }
+
   // Convert different API formats to TrackingMore-compatible format
   return {
     delivery_status: data.status || data.delivery_status || "In Transit",
@@ -333,16 +407,47 @@ async function tryMyShipTracking(vesselName) {
 // Find Real Vessel from Carrier (Hash-based for unique locations)
 async function findRealVesselFromCarrier(carrier, containerNumber) {
   try {
-    const hash = containerNumber.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const hash = containerNumber
+      .split("")
+      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const carrierVessels = {
-      'msc': ['MSC EUROPA', 'MSC GULSUN', 'MSC MINA', 'MSC SIXIN', 'MSC MAYA', 'MSC TESSA', 'MSC LORENA', 'MSC ISABELLA', 'MSC SAMAR', 'MSC RIFAYA', 'MSC ALTAIR', 'MSC VIVIANA'],
-      'maersk': ['MAERSK ESSEX', 'MAERSK ELBA', 'MAERSK ESSEN', 'MAERSK EDINBURGH', 'MAERSK EMDEN', 'MAERSK ENPING', 'MAERSK EVORA', 'MAERSK EMERALD'],
-      'cma-cgm': ['CMA CGM LAGOS', 'CMA CGM PARIS', 'CMA CGM LONDON', 'CMA CGM BERLIN', 'CMA CGM TOKYO', 'CMA CGM SEOUL']
+      msc: [
+        "MSC EUROPA",
+        "MSC GULSUN",
+        "MSC MINA",
+        "MSC SIXIN",
+        "MSC MAYA",
+        "MSC TESSA",
+        "MSC LORENA",
+        "MSC ISABELLA",
+        "MSC SAMAR",
+        "MSC RIFAYA",
+        "MSC ALTAIR",
+        "MSC VIVIANA",
+      ],
+      maersk: [
+        "MAERSK ESSEX",
+        "MAERSK ELBA",
+        "MAERSK ESSEN",
+        "MAERSK EDINBURGH",
+        "MAERSK EMDEN",
+        "MAERSK ENPING",
+        "MAERSK EVORA",
+        "MAERSK EMERALD",
+      ],
+      "cma-cgm": [
+        "CMA CGM LAGOS",
+        "CMA CGM PARIS",
+        "CMA CGM LONDON",
+        "CMA CGM BERLIN",
+        "CMA CGM TOKYO",
+        "CMA CGM SEOUL",
+      ],
     };
     const vessels = carrierVessels[carrier];
     if (!vessels) return null;
     const selectedVessel = vessels[hash % vessels.length];
-    console.log(Selected: );
+    console.log("Selected Vessel:", selectedVessel);
     const position = await getVesselPositionFromAIS(selectedVessel);
     if (position) return { name: selectedVessel, position };
     return null;
@@ -350,4 +455,3 @@ async function findRealVesselFromCarrier(carrier, containerNumber) {
     return null;
   }
 }
-
