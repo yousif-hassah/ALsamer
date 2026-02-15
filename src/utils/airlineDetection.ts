@@ -7,276 +7,286 @@ export interface AirlineInfo {
 }
 
 export const AIRLINES: Record<string, AirlineInfo> = {
-  // Major Airlines (IATA codes)
-  AA: {
-    name: "American Airlines",
-    code: "AA",
-    trackingUrl: "https://www.aa.com/reservation/flightTracking",
-  },
-  DL: {
-    name: "Delta Air Lines",
-    code: "DL",
-    trackingUrl: "https://www.delta.com/flight-status",
-  },
-  UA: {
-    name: "United Airlines",
-    code: "UA",
-    trackingUrl: "https://www.united.com/en/us/flight-status",
-  },
-  BA: {
-    name: "British Airways",
-    code: "BA",
-    trackingUrl: "https://www.britishairways.com/travel/flight-tracker",
-  },
-  AF: {
-    name: "Air France",
-    code: "AF",
-    trackingUrl: "https://www.airfrance.com/flight-status",
-  },
-  LH: {
-    name: "Lufthansa",
-    code: "LH",
-    trackingUrl: "https://www.lufthansa.com/flight-status",
-  },
+  // Major Airlines with Cargo Divisions (IATA codes)
+  // Note: These are AIR CARGO tracking URLs, not passenger flight tracking
+
+  // Middle East & Gulf Carriers
   EK: {
-    name: "Emirates",
+    name: "Emirates SkyCargo",
     code: "EK",
-    trackingUrl:
-      "https://www.emirates.com/english/manage-booking/flight-status.aspx",
+    trackingUrl: "https://www.skycargo.com/english/track-shipment/",
   },
   QR: {
-    name: "Qatar Airways",
+    name: "Qatar Airways Cargo",
     code: "QR",
-    trackingUrl: "https://www.qatarairways.com/en/flight-status.html",
+    trackingUrl: "https://cargo.qatarairways.com/track-shipment",
   },
   EY: {
-    name: "Etihad Airways",
+    name: "Etihad Cargo",
     code: "EY",
-    trackingUrl: "https://www.etihad.com/en/manage/flight-status",
+    trackingUrl: "https://www.etihadcargo.com/en/track-shipment/",
   },
   SV: {
-    name: "Saudia",
+    name: "Saudia Cargo",
     code: "SV",
-    trackingUrl: "https://www.saudia.com/flight-status",
+    trackingUrl: "https://www.saudiacargo.com/track-shipment",
   },
   MS: {
-    name: "EgyptAir",
+    name: "EgyptAir Cargo",
     code: "MS",
-    trackingUrl: "https://www.egyptair.com/en/fly/flight-status",
+    trackingUrl: "https://cargo.egyptair.com/track",
   },
   TK: {
-    name: "Turkish Airlines",
+    name: "Turkish Cargo",
     code: "TK",
-    trackingUrl:
-      "https://www.turkishairlines.com/en-int/flights/flight-status/",
-  },
-  SQ: {
-    name: "Singapore Airlines",
-    code: "SQ",
-    trackingUrl:
-      "https://www.singaporeair.com/en_UK/plan-and-book/flight-status/",
-  },
-  CX: {
-    name: "Cathay Pacific",
-    code: "CX",
-    trackingUrl:
-      "https://www.cathaypacific.com/cx/en_US/travel-information/flying-with-us/flight-status.html",
-  },
-  NH: {
-    name: "All Nippon Airways (ANA)",
-    code: "NH",
-    trackingUrl: "https://www.ana.co.jp/en/us/flight-status/",
-  },
-  JL: {
-    name: "Japan Airlines (JAL)",
-    code: "JL",
-    trackingUrl: "https://www.jal.co.jp/en/flight-status/",
-  },
-  KE: {
-    name: "Korean Air",
-    code: "KE",
-    trackingUrl:
-      "https://www.koreanair.com/global/en/booking/flight-status.html",
-  },
-  OZ: {
-    name: "Asiana Airlines",
-    code: "OZ",
-    trackingUrl: "https://flyasiana.com/C/US/EN/contents/flight-status",
-  },
-  CA: {
-    name: "Air China",
-    code: "CA",
-    trackingUrl:
-      "https://www.airchina.us/US/GB/info/flight-info/flight-status/",
-  },
-  MU: {
-    name: "China Eastern",
-    code: "MU",
-    trackingUrl: "https://us.ceair.com/en/flight-status/",
-  },
-  CZ: {
-    name: "China Southern",
-    code: "CZ",
-    trackingUrl:
-      "https://www.csair.com/en/tourguide/flight_service/flight_status/",
-  },
-  QF: {
-    name: "Qantas",
-    code: "QF",
-    trackingUrl: "https://www.qantas.com/us/en/flight-status.html",
-  },
-  NZ: {
-    name: "Air New Zealand",
-    code: "NZ",
-    trackingUrl: "https://www.airnewzealand.com/flight-status",
-  },
-  AC: {
-    name: "Air Canada",
-    code: "AC",
-    trackingUrl:
-      "https://www.aircanada.com/ca/en/aco/home/book/flight-status.html",
-  },
-  LX: {
-    name: "Swiss International Air Lines",
-    code: "LX",
-    trackingUrl:
-      "https://www.swiss.com/us/en/prepare/flight-information/flight-status",
-  },
-  OS: {
-    name: "Austrian Airlines",
-    code: "OS",
-    trackingUrl: "https://www.austrian.com/us/en/flight-status",
-  },
-  AZ: {
-    name: "ITA Airways",
-    code: "AZ",
-    trackingUrl: "https://www.ita-airways.com/en_us/fly-ita/flight-status.html",
-  },
-  KL: {
-    name: "KLM Royal Dutch Airlines",
-    code: "KL",
-    trackingUrl:
-      "https://www.klm.com/information/flight-information/flight-status",
-  },
-  IB: {
-    name: "Iberia",
-    code: "IB",
-    trackingUrl: "https://www.iberia.com/us/flight-status/",
-  },
-  AY: {
-    name: "Finnair",
-    code: "AY",
-    trackingUrl: "https://www.finnair.com/en/flight-status",
-  },
-  SK: {
-    name: "SAS Scandinavian Airlines",
-    code: "SK",
-    trackingUrl: "https://www.flysas.com/en/flight-status/",
-  },
-  TP: {
-    name: "TAP Air Portugal",
-    code: "TP",
-    trackingUrl: "https://www.flytap.com/en-us/flight-status",
+    trackingUrl: "https://cargo.turkishairlines.com/en/track-shipment",
   },
   RJ: {
-    name: "Royal Jordanian",
+    name: "Royal Jordanian Cargo",
     code: "RJ",
-    trackingUrl: "https://www.rj.com/en/info-and-tips/flight-status",
+    trackingUrl: "https://cargo.rj.com/track",
   },
   ME: {
-    name: "Middle East Airlines",
+    name: "MEA Cargo",
     code: "ME",
-    trackingUrl: "https://www.mea.com.lb/english/flight-status",
+    trackingUrl: "https://www.mea.com.lb/english/cargo/track-shipment",
   },
   GF: {
-    name: "Gulf Air",
+    name: "Gulf Air Cargo",
     code: "GF",
-    trackingUrl: "https://www.gulfair.com/flight-status",
+    trackingUrl: "https://www.gulfair.com/cargo/track-shipment",
   },
   WY: {
-    name: "Oman Air",
+    name: "Oman Air Cargo",
     code: "WY",
-    trackingUrl: "https://www.omanair.com/en/flight-status",
+    trackingUrl: "https://www.omanair.com/en/cargo/track-shipment",
   },
   KU: {
-    name: "Kuwait Airways",
+    name: "Kuwait Airways Cargo",
     code: "KU",
-    trackingUrl: "https://www.kuwaitairways.com/en/flight-status",
+    trackingUrl: "https://www.kuwaitairways.com/en/cargo/track",
   },
-  FZ: {
-    name: "flydubai",
-    code: "FZ",
-    trackingUrl: "https://www.flydubai.com/en/plan/flight-status/",
+
+  // US Carriers
+  AA: {
+    name: "American Airlines Cargo",
+    code: "AA",
+    trackingUrl: "https://www.aacargo.com/track-shipment.html",
   },
-  XY: {
-    name: "flynas",
-    code: "XY",
-    trackingUrl: "https://www.flynas.com/en/flight-status",
+  DL: {
+    name: "Delta Cargo",
+    code: "DL",
+    trackingUrl: "https://www.deltacargo.com/track-shipment",
+  },
+  UA: {
+    name: "United Cargo",
+    code: "UA",
+    trackingUrl: "https://www.unitedcargo.com/track-shipment",
+  },
+
+  // European Carriers
+  BA: {
+    name: "British Airways World Cargo",
+    code: "BA",
+    trackingUrl: "https://www.iagcargo.com/en/track-shipment",
+  },
+  AF: {
+    name: "Air France KLM Cargo",
+    code: "AF",
+    trackingUrl: "https://www.afklcargo.com/WW/en/common/tools/track_trace.jsp",
+  },
+  LH: {
+    name: "Lufthansa Cargo",
+    code: "LH",
+    trackingUrl: "https://www.lufthansa-cargo.com/track-shipment",
+  },
+  LX: {
+    name: "Swiss WorldCargo",
+    code: "LX",
+    trackingUrl: "https://www.swissworldcargo.com/track-shipment",
+  },
+  KL: {
+    name: "Air France KLM Cargo",
+    code: "KL",
+    trackingUrl: "https://www.afklcargo.com/WW/en/common/tools/track_trace.jsp",
+  },
+  IB: {
+    name: "Iberia Cargo",
+    code: "IB",
+    trackingUrl: "https://www.iagcargo.com/en/track-shipment",
+  },
+  AY: {
+    name: "Finnair Cargo",
+    code: "AY",
+    trackingUrl: "https://www.finnaircargo.com/track-shipment",
+  },
+  SK: {
+    name: "SAS Cargo",
+    code: "SK",
+    trackingUrl: "https://www.sascargo.com/track-shipment",
+  },
+
+  // Asian Carriers
+  SQ: {
+    name: "Singapore Airlines Cargo",
+    code: "SQ",
+    trackingUrl: "https://www.siacargo.com/track-shipment",
+  },
+  CX: {
+    name: "Cathay Pacific Cargo",
+    code: "CX",
+    trackingUrl: "https://www.cathaypacificcargo.com/track-shipment",
+  },
+  NH: {
+    name: "ANA Cargo",
+    code: "NH",
+    trackingUrl: "https://www.anacargo.jp/en/track-shipment/",
+  },
+  JL: {
+    name: "JAL Cargo",
+    code: "JL",
+    trackingUrl: "https://www.jal.com/en/jalcargo/track/",
+  },
+  KE: {
+    name: "Korean Air Cargo",
+    code: "KE",
+    trackingUrl: "https://cargo.koreanair.com/track-shipment",
+  },
+  OZ: {
+    name: "Asiana Cargo",
+    code: "OZ",
+    trackingUrl: "https://cargo.flyasiana.com/track",
+  },
+  CA: {
+    name: "Air China Cargo",
+    code: "CA",
+    trackingUrl: "https://www.airchina.us/cargo/track-shipment",
+  },
+  MU: {
+    name: "China Eastern Cargo",
+    code: "MU",
+    trackingUrl: "https://cargo.ceair.com/track",
+  },
+  CZ: {
+    name: "China Southern Cargo",
+    code: "CZ",
+    trackingUrl: "https://www.cscargo.com/track-shipment",
+  },
+
+  // Oceania
+  QF: {
+    name: "Qantas Freight",
+    code: "QF",
+    trackingUrl: "https://www.qantasfreight.com/track-shipment",
+  },
+  NZ: {
+    name: "Air New Zealand Cargo",
+    code: "NZ",
+    trackingUrl: "https://www.airnzcargo.co.nz/track-shipment",
+  },
+
+  // Other Major Carriers
+  AC: {
+    name: "Air Canada Cargo",
+    code: "AC",
+    trackingUrl: "https://www.aircanadacargo.com/track-shipment",
+  },
+  AI: {
+    name: "Air India Cargo",
+    code: "AI",
+    trackingUrl: "https://www.airindia.com/cargo/track-shipment.html",
+  },
+
+  // Dedicated Cargo Airlines
+  "5X": {
+    name: "UPS Airlines",
+    code: "5X",
+    trackingUrl: "https://www.ups.com/track",
+  },
+  FX: {
+    name: "FedEx Express",
+    code: "FX",
+    trackingUrl: "https://www.fedex.com/en/tracking.html",
+  },
+  "7L": {
+    name: "Silk Way West Airlines",
+    code: "7L",
+    trackingUrl: "https://www.silkwaywest.com/track-shipment",
+  },
+  CV: {
+    name: "Cargolux",
+    code: "CV",
+    trackingUrl: "https://www.cargolux.com/track-shipment",
+  },
+  CK: {
+    name: "Kalitta Air",
+    code: "CK",
+    trackingUrl: "https://www.kalittaair.com/track-shipment",
+  },
+
+  // Latin America
+  LA: {
+    name: "LATAM Cargo",
+    code: "LA",
+    trackingUrl: "https://www.latamcargo.com/en/track-shipment",
+  },
+  AM: {
+    name: "Aeromexico Cargo",
+    code: "AM",
+    trackingUrl: "https://cargo.aeromexico.com/track",
+  },
+
+  // Africa
+  SA: {
+    name: "South African Airways Cargo",
+    code: "SA",
+    trackingUrl: "https://www.flysaa.com/cargo/track-shipment",
+  },
+  ET: {
+    name: "Ethiopian Cargo",
+    code: "ET",
+    trackingUrl: "https://cargo.ethiopianairlines.com/track",
   },
   AT: {
-    name: "Royal Air Maroc",
+    name: "Royal Air Maroc Cargo",
     code: "AT",
-    trackingUrl: "https://www.royalairmaroc.com/int-en/flight-status",
-  },
-  UX: {
-    name: "Air Europa",
-    code: "UX",
-    trackingUrl: "https://www.aireuropa.com/en/flights/flight-status",
-  },
-  VY: {
-    name: "Vueling",
-    code: "VY",
-    trackingUrl:
-      "https://www.vueling.com/en/vueling-services/prepare-your-trip/flight-status",
-  },
-  FR: {
-    name: "Ryanair",
-    code: "FR",
-    trackingUrl: "https://www.ryanair.com/gb/en/check-in/flight-tracker",
-  },
-  U2: {
-    name: "easyJet",
-    code: "U2",
-    trackingUrl: "https://www.easyjet.com/en/flight-tracker",
-  },
-  W6: {
-    name: "Wizz Air",
-    code: "W6",
-    trackingUrl:
-      "https://wizzair.com/en-gb/information-and-services/wizz-services/flight-status",
+    trackingUrl: "https://www.royalairmaroc.com/cargo/track-shipment",
   },
 };
 
 /**
- * Detect airline from flight number
+ * Detect airline from flight number or AWB prefix
  * Flight numbers typically follow format: AA1234 (2-3 letter code + numbers)
+ * AWB prefix: 3-digit airline code (e.g., 176 for Emirates)
  */
 export function detectAirline(flightNumber: string): AirlineInfo | null {
-  if (!flightNumber || flightNumber.length < 3) {
+  if (!flightNumber || flightNumber.length < 2) {
     return null;
   }
 
-  // Extract airline code (first 2-3 letters)
+  // Try to extract airline code (first 2-3 letters for flight numbers)
   const match = flightNumber.match(/^([A-Z]{2,3})/i);
-  if (!match) return null;
+  if (match) {
+    const code = match[1].toUpperCase();
 
-  const code = match[1].toUpperCase();
-
-  // Return known airline if found
-  if (AIRLINES[code]) {
-    return AIRLINES[code];
+    // Return known airline if found
+    if (AIRLINES[code]) {
+      return AIRLINES[code];
+    }
   }
 
   // Fallback: Create a generic airline entry for unknown codes
+  // Use Track-Trace.com which supports 200+ airlines
+  const genericCode = flightNumber.substring(0, 2).toUpperCase();
   return {
-    name: `${code} Airlines`,
-    code: code,
-    trackingUrl: `https://www.flightstats.com/v2/flight-tracker/${flightNumber}`,
+    name: `${genericCode} Cargo`,
+    code: genericCode,
+    trackingUrl: `https://www.track-trace.com/aircargo`,
   };
 }
 
 /**
- * Get tracking URL for a specific flight
+ * Get tracking URL for a specific flight/AWB
  */
 export function getAirlineTrackingUrl(flightNumber: string): string | null {
   const airline = detectAirline(flightNumber);
