@@ -67,11 +67,28 @@ export default async function handler(req, res) {
           airData.altitude = flightPosition.altitude;
           airData.speed = flightPosition.speed;
           airData.heading = flightPosition.heading;
+          airData.is_real_gps = true;
           source += "+GPS";
           console.log(
             `✅ Real flight GPS: ${flightPosition.lat}, ${flightPosition.lng}`,
           );
+        } else {
+          // Fallback to deterministic simulated coordinate based on tracking number
+          const hash = trackingNumber
+            .split("")
+            .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+          airData.latitude = 30 + (hash % 15);
+          airData.longitude = 30 + (hash % 20);
+          airData.is_estimate = true;
         }
+      } else {
+        // No flight number found - randomized estimate
+        const hash = trackingNumber
+          .split("")
+          .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        airData.latitude = 25 + (hash % 20);
+        airData.longitude = 35 + (hash % 25);
+        airData.is_estimate = true;
       }
 
       return res.status(200).json({ code: 200, data: [airData], source });

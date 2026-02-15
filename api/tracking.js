@@ -83,11 +83,30 @@ export default async function handler(req, res) {
           containerData.speed = vesselPosition.speed;
           containerData.course = vesselPosition.course;
           containerData.ais_updated = vesselPosition.timestamp;
+          containerData.is_real_gps = true;
           source += "+AIS"; // Indicate we have real GPS data
           console.log(
             `✅ Real GPS found: ${vesselPosition.lat}, ${vesselPosition.lng}`,
           );
+        } else {
+          // Fallback to deterministic simulated coordinate based on hash
+          // This ensures different containers appear in different maritime locations
+          const hash = trackingNumber
+            .split("")
+            .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+          // Coordinates in a safe maritime zone (e.g., Arabian Sea / Indian Ocean)
+          containerData.latitude = 15 + (hash % 10);
+          containerData.longitude = 55 + (hash % 20);
+          containerData.is_estimate = true;
         }
+      } else {
+        // No vessel name found at all
+        const hash = trackingNumber
+          .split("")
+          .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        containerData.latitude = 15 + (hash % 15);
+        containerData.longitude = 45 + (hash % 25);
+        containerData.is_estimate = true;
       }
 
       return res.status(200).json({ code: 200, data: [containerData], source });
