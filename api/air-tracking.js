@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 🎯 TESTING MODE: ShipResolve ONLY (to verify credit consumption)
+    // 🎯 PRIMARY SOURCE: ShipResolve (Paid, most reliable)
     let airData = await tryShipResolve(trackingNumber);
     let source = "shipresolve";
 
@@ -36,26 +36,29 @@ export default async function handler(req, res) {
       airData = await tryShipResolve(trackingNumber);
     }
 
-    // 🚫 TEMPORARILY DISABLED (for testing ShipResolve consumption)
+    // ✅ FALLBACK SOURCES (if ShipResolve doesn't have data yet)
     // Source 1: Try AviationStack (Free - 100/month)
-    // if (!airData) {
-    //   airData = await tryAviationStack(trackingNumber);
-    //   if (airData) {
-    //     source = "aviationstack";
-    //   }
-    // }
+    if (!airData) {
+      console.log("🔄 Trying AviationStack as fallback...");
+      airData = await tryAviationStack(trackingNumber);
+      if (airData) {
+        source = "aviationstack";
+      }
+    }
 
     // Source 2: Try FlightLabs (Free)
-    // if (!airData) {
-    //   airData = await tryFlightLabs(trackingNumber);
-    //   if (airData) source = "flightlabs";
-    // }
+    if (!airData) {
+      console.log("🔄 Trying FlightLabs as fallback...");
+      airData = await tryFlightLabs(trackingNumber);
+      if (airData) source = "flightlabs";
+    }
 
     // Source 3: Try OpenSky Network (Free - 4000/day)
-    // if (!airData) {
-    //   airData = await tryOpenSky(trackingNumber);
-    //   if (airData) source = "opensky";
-    // }
+    if (!airData) {
+      console.log("🔄 Trying OpenSky as fallback...");
+      airData = await tryOpenSky(trackingNumber);
+      if (airData) source = "opensky";
+    }
 
     // If we got flight data, enhance it with real GPS from flight tracking
     if (airData) {

@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 🎯 TESTING MODE: ShipResolve ONLY (to verify credit consumption)
+    // 🎯 PRIMARY SOURCE: ShipResolve (Paid, most reliable)
     let containerData = await tryShipResolve(trackingNumber);
     let source = "shipresolve";
     let retryAttempted = false;
@@ -44,30 +44,20 @@ export default async function handler(req, res) {
       finalDataFound: !!containerData,
     };
 
-    // 🚫 TEMPORARILY DISABLED (for testing ShipResolve consumption)
-    // Source 1: Try Terminal49 (Free for 100 containers)
-    // if (!containerData) {
-    //   containerData = await tryTerminal49(trackingNumber);
-    //   source = "terminal49";
-    // }
-
+    // ✅ FALLBACK SOURCES (if ShipResolve doesn't have data yet)
     // Source 2: Try findTEU (Free for 10/month)
-    // if (!containerData) {
-    //   containerData = await tryFindTEU(trackingNumber);
-    //   source = "findteu";
-    // }
+    if (!containerData) {
+      console.log("🔄 Trying findTEU as fallback...");
+      containerData = await tryFindTEU(trackingNumber);
+      source = "findteu";
+    }
 
     // Source 3: Try Shipsgo (Unlimited free)
-    // if (!containerData) {
-    //   containerData = await tryShipsgo(trackingNumber);
-    //   source = "shipsgo";
-    // }
-
-    // Source 4: Web scraping from carrier websites
-    // if (!containerData) {
-    //   containerData = await tryWebScraping(trackingNumber);
-    //   source = "webscrape";
-    // }
+    if (!containerData) {
+      console.log("🔄 Trying Shipsgo as fallback...");
+      containerData = await tryShipsgo(trackingNumber);
+      source = "shipsgo";
+    }
 
     // If we got container data, enhance it with real GPS coordinates from AIS
     if (containerData) {
