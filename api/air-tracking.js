@@ -116,19 +116,20 @@ async function tryShipResolve(trackingNumber) {
       return null;
     }
 
-    const response = await fetch(
-      `https://api.shipresolve.com/v1/trackings/${trackingNumber}`,
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          Accept: "application/json",
-        },
-        timeout: 4000,
+    const getUrl = `https://api.shipresolve.com/v1/tracking/${trackingNumber}`;
+    console.log(`🔗 Requesting ShipResolve (Air): ${getUrl}`);
+
+    const response = await fetch(getUrl, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        Accept: "application/json",
       },
-    );
+      timeout: 4000,
+    });
 
     if (response.ok) {
       const result = await response.json();
+      console.log(`✅ ShipResolve (Air) Found for ${trackingNumber}`);
       const data = result.data || result;
 
       // Check if it's air cargo (AWB format)
@@ -144,18 +145,27 @@ async function tryShipResolve(trackingNumber) {
         longitude: data.lng || null,
       };
     } else if (response.status === 404) {
+      console.log(`ℹ️ Air Number ${trackingNumber} not found. Registering...`);
       // Auto-create tracking on ShipResolve
-      await fetch(`https://api.shipresolve.com/v1/trackings`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
+      const createResponse = await fetch(
+        `https://api.shipresolve.com/v1/tracking`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            tracking_number: trackingNumber,
+            carrier: "auto-detect",
+          }),
+          timeout: 4000,
         },
-        body: JSON.stringify({
-          tracking_number: trackingNumber,
-        }),
-        timeout: 4000,
-      });
+      );
+
+      if (createResponse.ok) {
+        console.log(`🚀 Successfully registered Air ${trackingNumber}.`);
+      }
     }
   } catch (e) {
     console.log("ShipResolve Air failed:", e.message);

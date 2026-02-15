@@ -135,40 +135,57 @@ async function tryShipResolve(trackingNumber) {
     }
 
     // Attempting to track/get status from ShipResolve
-    // Using their standard GET tracking endpoint
-    const response = await fetch(
-      `https://api.shipresolve.com/v1/trackings/${trackingNumber}`,
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          Accept: "application/json",
-        },
-        timeout: 4000,
+    // Correct endpoint is singular 'tracking'
+    const getUrl = `https://api.shipresolve.com/v1/tracking/${trackingNumber}`;
+    console.log(`🔗 Requesting ShipResolve: ${getUrl}`);
+
+    let response = await fetch(getUrl, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        Accept: "application/json",
       },
-    );
+      timeout: 4000,
+    });
 
     if (response.ok) {
       const result = await response.json();
-      // ShipResolve usually returns data in a 'data' object or directly
+      console.log(`✅ ShipResolve Data Found for ${trackingNumber}`);
       const data = result.data || result;
       return normalizeData(data, "shipresolve");
     } else if (response.status === 404) {
-      // If not found, we might need to "create" the tracking first
-      // But for a simple demo-to-real transition, we'll try to create it automatically
-      await fetch(`https://api.shipresolve.com/v1/trackings`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
+      console.log(
+        `ℹ️ Number ${trackingNumber} not found. Registering with ShipResolve...`,
+      );
+      // Auto-create tracking on ShipResolve if not found
+      const createResponse = await fetch(
+        `https://api.shipresolve.com/v1/tracking`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            tracking_number: trackingNumber,
+            carrier: "auto-detect", // Crucial for auto-registration
+          }),
+          timeout: 4000,
         },
-        body: JSON.stringify({
-          tracking_number: trackingNumber,
-        }),
-        timeout: 4000,
-      });
-      // We return null here because the first call failed,
-      // but the next time the user searches, it might be ready.
-      // Or we could wait, but that might slow down the UI.
+      );
+
+      if (createResponse.ok) {
+        console.log(
+          `🚀 Successfully registered ${trackingNumber}. Consumption should now start.`,
+        );
+        // Note: Data might not be available immediately after POST,
+        // but it triggers the system to start tracking.
+      } else {
+        const errText = await createResponse.text();
+        console.log(`❌ Failed to register ${trackingNumber}: ${errText}`);
+      }
+    } else {
+      const errText = await response.text();
+      console.log(`❌ ShipResolve GET failed (${response.status}): ${errText}`);
     }
   } catch (e) {
     console.log("ShipResolve failed:", e.message);
