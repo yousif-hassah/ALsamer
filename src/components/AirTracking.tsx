@@ -63,9 +63,9 @@ const AirTracking = () => {
     setIsSearching(true);
 
     try {
-      // New hybrid system: tries 4 free sources automatically before simulation
+      // Use dedicated air tracking API with real flight data
       const response = await fetch(
-        `/api/tracking?trackingNumber=${cleanNumber}`,
+        `/api/air-tracking?trackingNumber=${cleanNumber}`,
       );
 
       if (!response.ok) {
