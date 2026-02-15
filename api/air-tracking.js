@@ -21,35 +21,41 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Try to get air cargo data from multiple sources
-    let airData = null;
-    let source = "unknown";
+    // 🎯 TESTING MODE: ShipResolve ONLY (to verify credit consumption)
+    let airData = await tryShipResolve(trackingNumber);
+    let source = "shipresolve";
 
-    // Source 0: Try ShipResolve (New primary source)
-    airData = await tryShipResolve(trackingNumber);
-    if (airData) {
-      source = "shipresolve";
-    }
-
-    // Source 1: Try AviationStack (Free - 100/month)
+    // If ShipResolve didn't return data immediately, wait and retry
     if (!airData) {
-      airData = await tryAviationStack(trackingNumber);
-      if (airData) {
-        source = "aviationstack";
-      }
+      console.log(
+        "⏳ ShipResolve (Air): Data not ready yet. Waiting 10 seconds...",
+      );
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+
+      console.log("🔄 Retrying ShipResolve (Air) after wait...");
+      airData = await tryShipResolve(trackingNumber);
     }
+
+    // 🚫 TEMPORARILY DISABLED (for testing ShipResolve consumption)
+    // Source 1: Try AviationStack (Free - 100/month)
+    // if (!airData) {
+    //   airData = await tryAviationStack(trackingNumber);
+    //   if (airData) {
+    //     source = "aviationstack";
+    //   }
+    // }
 
     // Source 2: Try FlightLabs (Free)
-    if (!airData) {
-      airData = await tryFlightLabs(trackingNumber);
-      if (airData) source = "flightlabs";
-    }
+    // if (!airData) {
+    //   airData = await tryFlightLabs(trackingNumber);
+    //   if (airData) source = "flightlabs";
+    // }
 
     // Source 3: Try OpenSky Network (Free - 4000/day)
-    if (!airData) {
-      airData = await tryOpenSky(trackingNumber);
-      if (airData) source = "opensky";
-    }
+    // if (!airData) {
+    //   airData = await tryOpenSky(trackingNumber);
+    //   if (airData) source = "opensky";
+    // }
 
     // If we got flight data, enhance it with real GPS from flight tracking
     if (airData) {

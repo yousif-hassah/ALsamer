@@ -21,33 +21,45 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Source 0: Try ShipResolve (New primary source)
+    // 🎯 TESTING MODE: ShipResolve ONLY (to verify credit consumption)
     let containerData = await tryShipResolve(trackingNumber);
     let source = "shipresolve";
 
-    // Source 1: Try Terminal49 (Free for 100 containers)
+    // If ShipResolve didn't return data immediately, wait and retry
     if (!containerData) {
-      containerData = await tryTerminal49(trackingNumber);
-      source = "terminal49";
+      console.log(
+        "⏳ ShipResolve: Data not ready yet. Waiting 10 seconds for processing...",
+      );
+      await new Promise((resolve) => setTimeout(resolve, 10000)); // Wait 10 seconds
+
+      console.log("🔄 Retrying ShipResolve after wait...");
+      containerData = await tryShipResolve(trackingNumber);
     }
+
+    // 🚫 TEMPORARILY DISABLED (for testing ShipResolve consumption)
+    // Source 1: Try Terminal49 (Free for 100 containers)
+    // if (!containerData) {
+    //   containerData = await tryTerminal49(trackingNumber);
+    //   source = "terminal49";
+    // }
 
     // Source 2: Try findTEU (Free for 10/month)
-    if (!containerData) {
-      containerData = await tryFindTEU(trackingNumber);
-      source = "findteu";
-    }
+    // if (!containerData) {
+    //   containerData = await tryFindTEU(trackingNumber);
+    //   source = "findteu";
+    // }
 
     // Source 3: Try Shipsgo (Unlimited free)
-    if (!containerData) {
-      containerData = await tryShipsgo(trackingNumber);
-      source = "shipsgo";
-    }
+    // if (!containerData) {
+    //   containerData = await tryShipsgo(trackingNumber);
+    //   source = "shipsgo";
+    // }
 
     // Source 4: Web scraping from carrier websites
-    if (!containerData) {
-      containerData = await tryWebScraping(trackingNumber);
-      source = "webscrape";
-    }
+    // if (!containerData) {
+    //   containerData = await tryWebScraping(trackingNumber);
+    //   source = "webscrape";
+    // }
 
     // If we got container data, enhance it with real GPS coordinates from AIS
     if (containerData) {
