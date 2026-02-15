@@ -9,9 +9,11 @@ import {
   Package,
   AlertCircle,
   Loader2,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { detectAirline, getAirlineTrackingUrl } from "@/utils/airlineDetection";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -40,17 +42,22 @@ const AirTracking = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
 
-  // Validate AWB (Air Waybill) number format (3-digit airline code + 8-digit serial number)
+  // Validate AWB (Air Waybill) number OR Flight number format
   const validateAwbNumber = (num: string): boolean => {
-    const pattern = /^[0-9]{3}-?[0-9]{8}$/;
-    return pattern.test(num.replace(/\s/g, ""));
+    // AWB format: 3-digit airline code + 8-digit serial number (e.g., 176-12345678)
+    const awbPattern = /^[0-9]{3}-?[0-9]{8}$/;
+    // Flight number format: 2-3 letter airline code + 1-4 digit number (e.g., EK215, AA1234)
+    const flightPattern = /^[A-Z]{2,3}[0-9]{1,4}$/i;
+
+    const cleaned = num.replace(/\s/g, "");
+    return awbPattern.test(cleaned) || flightPattern.test(cleaned);
   };
 
   const handleTrack = async () => {
     setError(null);
     setResult(null);
 
-    const cleanNumber = awbNumber.trim().replace(/\s/g, "");
+    const cleanNumber = awbNumber.trim().toUpperCase().replace(/\s/g, "");
 
     if (!cleanNumber) {
       setError(t("airtracking.invalid"));
@@ -1238,6 +1245,36 @@ const AirTracking = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Airline Official Tracking Button */}
+                  {(() => {
+                    const airline = detectAirline(result.flight);
+                    const trackingUrl = getAirlineTrackingUrl(result.flight);
+
+                    if (airline && trackingUrl) {
+                      return (
+                        <div className="mt-4 pt-4 border-t border-white/10">
+                          <Button
+                            onClick={() => window.open(trackingUrl, "_blank")}
+                            className="w-full bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 transition-all duration-300 group"
+                          >
+                            <ExternalLink className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                            <span className="flex-1 text-center">
+                              {isRTL
+                                ? `تتبع على موقع ${airline.name}`
+                                : `Track on ${airline.name} Website`}
+                            </span>
+                          </Button>
+                          <p className="text-[10px] text-white/40 text-center mt-2">
+                            {isRTL
+                              ? "سيتم فتح الموقع الرسمي لشركة الطيران"
+                              : "Opens official airline tracking page"}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </div>
 
                 {/* Route Info Card */}

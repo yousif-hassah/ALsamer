@@ -9,9 +9,11 @@ import {
   Package,
   AlertCircle,
   Loader2,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { detectCarrier, getCarrierTrackingUrl } from "@/utils/carrierDetection";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -1367,6 +1369,38 @@ const ContainerTracking = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Carrier Official Tracking Button */}
+                  {(() => {
+                    const carrier = detectCarrier(result.containerNumber);
+                    const trackingUrl = getCarrierTrackingUrl(
+                      result.containerNumber,
+                    );
+
+                    if (carrier && trackingUrl) {
+                      return (
+                        <div className="mt-4 pt-4 border-t border-white/10">
+                          <Button
+                            onClick={() => window.open(trackingUrl, "_blank")}
+                            className="w-full bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 transition-all duration-300 group"
+                          >
+                            <ExternalLink className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                            <span className="flex-1 text-center">
+                              {isRTL
+                                ? `تتبع على موقع ${carrier.name}`
+                                : `Track on ${carrier.name} Website`}
+                            </span>
+                          </Button>
+                          <p className="text-[10px] text-white/40 text-center mt-2">
+                            {isRTL
+                              ? "سيتم فتح الموقع الرسمي للشركة الناقلة"
+                              : "Opens official carrier tracking page"}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </div>
 
                 {/* Route Info Card */}
