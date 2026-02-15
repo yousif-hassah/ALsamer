@@ -24,17 +24,25 @@ export default async function handler(req, res) {
     // 🎯 TESTING MODE: ShipResolve ONLY (to verify credit consumption)
     let containerData = await tryShipResolve(trackingNumber);
     let source = "shipresolve";
+    let retryAttempted = false;
 
     // If ShipResolve didn't return data immediately, wait and retry
     if (!containerData) {
       console.log(
         "⏳ ShipResolve: Data not ready yet. Waiting 10 seconds for processing...",
       );
+      retryAttempted = true;
       await new Promise((resolve) => setTimeout(resolve, 10000)); // Wait 10 seconds
 
       console.log("🔄 Retrying ShipResolve after wait...");
       containerData = await tryShipResolve(trackingNumber);
     }
+
+    // Store retry info for debugging
+    req.retryInfo = {
+      retryAttempted,
+      finalDataFound: !!containerData,
+    };
 
     // 🚫 TEMPORARILY DISABLED (for testing ShipResolve consumption)
     // Source 1: Try Terminal49 (Free for 100 containers)
@@ -133,6 +141,8 @@ export default async function handler(req, res) {
       debug: {
         shipresolve_key_exists: !!process.env.SHIPRESOLVE_API_KEY,
         vite_key_exists: !!process.env.VITE_SHIPRESOLVE_API_KEY,
+        retry_attempted: req.retryInfo?.retryAttempted || false,
+        final_data_found: req.retryInfo?.finalDataFound || false,
         timestamp: new Date().toISOString(),
       },
     });
