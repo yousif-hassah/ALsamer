@@ -65,19 +65,19 @@ const Footer = () => {
             </div>
             
             <h4 className="text-primary font-bold text-sm tracking-wide pt-4">
-              {isAr ? "الفروع الدولية" : "International Branches"}
+              {isAr ?"فروع الشركة " : "Company Branches"}
             </h4>
             <ul className="space-y-3">
               <li className={`flex gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
                 <MapPin className="w-3.5 h-3.5 text-primary/60 flex-shrink-0 mt-0.5" />
                 <span className="text-white/50 text-[10px]">
-                  {isAr ? "المنطقة الحرة بمطار دبي، المربع 24 H" : "Dubai Airport Freezone, Block 24 H"}
+                  {isAr ? "العراق - بغداد - الكرادة" : "Iraq - Baghdad - Al Karrada"}
                 </span>
               </li>
               <li className={`flex gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
                 <MapPin className="w-3.5 h-3.5 text-primary/60 flex-shrink-0 mt-0.5" />
                 <span className="text-white/50 text-[10px]">
-                  {isAr ? "أربيل - شارع 100 طن، مقابل مطار أربيل" : "Erbil - 100m St, Opp. Erbil Airport"}
+                  {isAr ? "العراق - أربيل - قرية الإنجليز - فيلا 133" : "Iraq - Erbil - Engilsh Village - Villa 133"}
                 </span>
               </li>
             </ul>
