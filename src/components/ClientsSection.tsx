@@ -6,12 +6,13 @@ const ClientsSection = () => {
   const { t, language } = useLanguage();
 
   const team = [
-    { nameEn: "Samer Mehdi", nameAr: "سامر مهدي", positionEn: "Managing Director", positionAr: "المدير العام" },
-    { nameEn: "Ahmed Hassan", nameAr: "أحمد حسن", positionEn: "Operations Manager", positionAr: "مدير العمليات" },
-    { nameEn: "Ali Kareem", nameAr: "علي كريم", positionEn: "Logistics Director", positionAr: "مدير الخدمات اللوجستية" },
-    { nameEn: "Omar Fadhil", nameAr: "عمر فاضل", positionEn: "Finance Manager", positionAr: "مدير المالية" },
-    { nameEn: "Mustafa Jabbar", nameAr: "مصطفى جبار", positionEn: "Marketing Manager", positionAr: "مدير التسويق" },
-    { nameEn: "Haider Nouri", nameAr: "حيدر نوري", positionEn: "Customs Director", positionAr: "مدير التخليص الجمركي" },
+    { nameEn: "Samer", nameAr: "سامر", positionEn: "CEO", positionAr: "الرئيس التنفيذي" },
+    { nameEn: "Hussain", nameAr: "حسين", positionEn: "General Manager", positionAr: "المدير العام" },
+    { nameEn: "Haidar", nameAr: "حيدر", positionEn: "Erbil Branch Manager", positionAr: "مدير فرع أربيل" },
+    { nameEn: "Yasameen", nameAr: "ياسمين", positionEn: "CFO", positionAr: "المدير المالي" },
+    { nameEn: "Aya", nameAr: "آية", positionEn: "Team Leader", positionAr: "قائد الفريق" },
+    { nameEn: "Dr. Sally", nameAr: "د. سالي", positionEn: "Procurement", positionAr: "المشتريات" },
+    { nameEn: "Fatima", nameAr: "فاطمة", positionEn: "Marketing Manager", positionAr: "مدير التسويق" },
   ];
 
   const isAr = language === "ar";

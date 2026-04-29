@@ -1224,7 +1224,7 @@ const ContainerTracking = () => {
               disabled={isSearching}
               variant="hero"
               size="lg"
-              className="h-12 sm:h-14 px-6 sm:px-8 w-full sm:w-auto"
+              className="h-11 sm:h-12 px-5 sm:px-7 w-full sm:w-auto"
             >
               {isSearching ? (
                 <>
